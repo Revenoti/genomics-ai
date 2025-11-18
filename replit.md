@@ -29,7 +29,7 @@ Preferred communication style: Simple, everyday language.
 
 **Styling System**: 
 - Tailwind CSS with custom configuration for healthcare-appropriate color schemes
-- **Color Scheme**: Blueish-green/teal primary color (HSL 180, 60%, 38% light mode / 48% dark mode) matching the center of the clinic's logo
+- **Color Scheme**: Blue-cyan primary color (HSL 195, 60%, 38% light mode / 48% dark mode) - a bluer variant inspired by the clinic's logo
 - Custom CSS variables for theme consistency (gradients, accent colors, borders)
 - Typography system using Inter for body text and Sora for headings to convey medical authority
 
