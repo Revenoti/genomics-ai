@@ -47,8 +47,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// Register API routes
-await registerRoutes(app);
+// Lazy initialization: register routes once when first request comes in
+let initPromise: Promise<void> | null = null;
+
+function ensureInitialized(): Promise<void> {
+  if (!initPromise) {
+    initPromise = registerRoutes(app).then(() => {
+      console.log("Routes registered successfully");
+    });
+  }
+  return initPromise;
+}
 
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   const status = err.status || err.statusCode || 500;
@@ -58,5 +67,11 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err);
 });
 
-// Export as Netlify serverless function
-export const handler = serverless(app);
+// Create serverless handler
+const serverlessHandler = serverless(app);
+
+// Export wrapped handler that ensures initialization before processing requests
+export const handler = async (event: any, context: any) => {
+  await ensureInitialized();
+  return serverlessHandler(event, context);
+};
