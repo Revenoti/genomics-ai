@@ -29,8 +29,15 @@ Preferred communication style: Simple, everyday language.
 
 **Styling System**: 
 - Tailwind CSS with custom configuration for healthcare-appropriate color schemes
+- **Color Scheme**: Blueish-green/teal primary color (HSL 180, 60%, 38% light mode / 48% dark mode) matching the center of the clinic's logo
 - Custom CSS variables for theme consistency (gradients, accent colors, borders)
 - Typography system using Inter for body text and Sora for headings to convey medical authority
+
+**Branding**:
+- Clinic logo (`logo_1763472194877.png`) displayed in top-left corner on all pages
+- Landing page: Logo positioned absolutely with z-index for visibility over gradient background
+- Chat header: Logo integrated into sticky header, clickable to return to home page
+- Responsive sizing: 48px mobile / 64px desktop (landing), 40px mobile / 48px desktop (chat)
 
 **Asset Handling**:
 - All static assets (images, logos) imported using Vite's `@assets` alias

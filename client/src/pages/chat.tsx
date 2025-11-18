@@ -97,7 +97,7 @@ export default function Chat() {
             if (data.sessionId) {
               if (sessionId === 'pending' || !sessionId) {
                 sessionId = data.sessionId;
-                dispatch({ type: 'SET_SESSION_ID', payload: sessionId });
+                dispatch({ type: 'SET_SESSION_ID', payload: data.sessionId });
               }
             }
             
