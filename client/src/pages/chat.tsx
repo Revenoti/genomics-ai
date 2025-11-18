@@ -289,7 +289,7 @@ export default function Chat() {
           <AlertDialogHeader>
             <AlertDialogTitle>Start a New Chat?</AlertDialogTitle>
             <AlertDialogDescription>
-              Your current conversation will be saved in our database. You can start fresh with a new session.
+              Your current conversation session will be cleared. You can start fresh with a new session.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
