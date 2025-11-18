@@ -24,9 +24,11 @@ A sophisticated AI-powered chat interface that serves as an intelligent consulta
 - **📚 RAG Knowledge Base**: Supabase vector database integration for contextual responses about clinic services, research, and the Posey Protocol
 - **💾 Database Persistence**: PostgreSQL support with automatic session restoration across page refreshes and server restarts
 - **🔄 Session Memory**: Conversation history persists via localStorage (within browser session) and optionally to database (across server restarts)
+- **🆕 New Chat Feature**: Start fresh conversations with confirmation dialog while preserving previous sessions in database
 - **📋 Dynamic Lead Qualification**: Intelligent form triggering after 2-4 conversation exchanges to capture patient information
 - **🎯 Smart Recommendations**: AI assistant provides personalized service recommendations with direct links to clinic scheduling
-- **📱 Mobile Optimized**: Fully responsive design with 44px touch targets and optimized layouts
+- **📱 Mobile Optimized**: Fully responsive design with 44px touch targets, optimized message input, and clean two-line footer address
+- **📍 Professional Footer**: Clinic address and copyright information displayed on all pages with mobile-optimized formatting
 - **🌐 SEO & Social Sharing**: Comprehensive Open Graph and Twitter Card meta tags for optimal social media presence
 
 ## Technology Stack
@@ -169,7 +171,12 @@ This creates the necessary tables and indexes in your database. The application 
 │   ├── src/
 │   │   ├── components/       # React components
 │   │   │   ├── chat/        # Chat-specific components
+│   │   │   │   ├── MessageInput.tsx    # Message input with send button
+│   │   │   │   ├── MessageList.tsx
+│   │   │   │   ├── MessageBubble.tsx
+│   │   │   │   └── DynamicFormMessage.tsx
 │   │   │   ├── ui/          # shadcn/ui components
+│   │   │   ├── Footer.tsx   # Footer with address and copyright
 │   │   │   ├── HeroSection.tsx
 │   │   │   ├── ImageCarousel.tsx
 │   │   │   └── IntriguingQuestions.tsx
@@ -178,8 +185,8 @@ This creates the necessary tables and indexes in your database. The application 
 │   │   ├── hooks/           # Custom React hooks
 │   │   ├── lib/             # Utilities and helpers
 │   │   ├── pages/           # Page components
-│   │   │   ├── landing.tsx
-│   │   │   └── chat.tsx
+│   │   │   ├── landing.tsx  # Landing page with footer
+│   │   │   └── chat.tsx     # Chat interface with New Chat button and footer
 │   │   ├── index.css        # Global styles and theme
 │   │   └── main.tsx         # Entry point
 │   └── index.html           # HTML template with SEO meta tags
@@ -296,10 +303,15 @@ Submit lead qualification form.
 - **Context Awareness**: RAG system retrieves relevant clinic information from Supabase
 - **Database Persistence**: Messages and sessions optionally stored in PostgreSQL (when DATABASE_URL is set)
 - **Session Restoration**: Conversation history automatically restored on page refresh via localStorage and database
+- **New Chat Button**: PlusCircle icon button in header to start fresh conversations
+  - Confirmation dialog prevents accidental resets
+  - Clears localStorage session ID and resets chat state
+  - Previous conversations preserved in database for analytics
+  - Success toast notification confirms new session
 - **Form State Persistence**: Lead qualification form visibility preserved across page refreshes (localStorage)
 - **Turn Tracking**: Intelligent turn counting for form triggering (3-5 exchanges)
 - **Form Integration**: Dynamic form appears after conversation engagement or strong interest signals
-- **Mobile Optimized**: Compact layout with 32px avatars and 2-row message input
+- **Mobile Optimized**: Compact layout with 32px avatars, send button on right side, and 2-row message input
 
 **Session Flow (with DATABASE_URL configured):**
 1. User starts chat → Server creates session with UUID
@@ -314,6 +326,17 @@ Submit lead qualification form.
 2. SessionId saved to browser localStorage
 3. Messages stored in memory (lost on server restart)
 4. On page refresh → Conversation lost if server restarted
+
+### Footer
+- **Contact Information**: Clinic address displayed prominently on all pages
+  - Address format (two lines for mobile readability):
+    - Line 1: 1217 Sovereign Row suite 107
+    - Line 2: Oklahoma City, OK 73108
+  - MapPin icon for visual clarity
+- **Copyright Notice**: "© 2025 Functional Genomic AI. All rights Reserved."
+- **Responsive Design**: Clean centered layout optimized for mobile and desktop
+- **Professional Styling**: Semi-transparent card background with subtle backdrop blur
+- **Consistent Placement**: Appears on both landing page and chat interface
 
 ### AI System Prompt
 The assistant operates with a dual role:
@@ -404,6 +427,35 @@ Contributions are welcome! Please follow these guidelines:
 Copyright © 2025 Functional Genomic Medicine. All rights reserved.
 
 This project is proprietary software. Unauthorized copying, modification, distribution, or use of this software, via any medium, is strictly prohibited.
+
+## Recent Updates
+
+### November 2025
+
+**New Chat Feature**
+- Added "New Chat" button (PlusCircle icon) to chat header
+- Confirmation dialog prevents accidental session resets
+- Dialog message: "Your current conversation session will be cleared. You can start fresh with a new session."
+- Clears localStorage session ID and resets chat state to welcome message
+- Previous conversations preserved in database for analytics
+- Success toast notification confirms new session started
+
+**Footer Component**
+- Professional footer added to both landing and chat pages
+- Contact information:
+  - Address displayed on two lines for mobile readability:
+    - Line 1: 1217 Sovereign Row suite 107
+    - Line 2: Oklahoma City, OK 73108
+  - MapPin icon for visual clarity
+- Copyright notice: "© 2025 Functional Genomic AI. All rights Reserved."
+- Semi-transparent card background with backdrop blur
+- Centered layout optimized for mobile and desktop
+
+**UI Improvements**
+- Fixed message input send button position from left to right (standard chat UI pattern)
+- Changed from absolute positioning to flex layout for better responsiveness
+- Send button now uses `flex-shrink-0` to maintain size
+- Improved mobile footer formatting with clean two-line address display
 
 ## Support
 
