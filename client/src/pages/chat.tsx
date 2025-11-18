@@ -4,6 +4,8 @@ import MessageList from '@/components/chat/MessageList';
 import MessageInput from '@/components/chat/MessageInput';
 import type { LeadFormData } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
+import { Link } from 'wouter';
+import logoUrl from '@assets/logo_1763472194877.png';
 
 export default function Chat() {
   const { state, dispatch } = useChat();
@@ -180,10 +182,19 @@ export default function Chat() {
     <div className="flex flex-col h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-10 h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex items-center justify-center h-full px-4">
-          <h1 className="text-lg font-semibold text-foreground" data-testid="chat-header">
+        <div className="flex items-center justify-between gap-2 h-full px-4 md:px-6">
+          <Link href="/" data-testid="link-home">
+            <img 
+              src={logoUrl} 
+              alt="Functional Genomic Medicine Logo" 
+              className="h-10 w-10 md:h-12 md:w-12 hover-elevate rounded-md cursor-pointer"
+              data-testid="img-logo-header"
+            />
+          </Link>
+          <h1 className="text-base md:text-lg font-semibold text-foreground" data-testid="chat-header">
             Genomics AI Assistant
           </h1>
+          <div className="w-10 md:w-12" />
         </div>
       </header>
 

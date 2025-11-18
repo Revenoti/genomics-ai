@@ -1,5 +1,6 @@
 import IntriguingQuestions from '@/components/IntriguingQuestions';
 import HeroSection from '@/components/HeroSection';
+import logoUrl from '@assets/logo_1763472194877.png';
 
 export default function Landing() {
   return (
@@ -22,6 +23,16 @@ export default function Landing() {
         }}
         aria-hidden="true"
       />
+
+      {/* Logo in Top Left */}
+      <div className="absolute top-4 left-4 md:top-6 md:left-6 z-10">
+        <img 
+          src={logoUrl} 
+          alt="Functional Genomic Medicine Logo" 
+          className="h-12 w-12 md:h-16 md:w-16"
+          data-testid="img-logo"
+        />
+      </div>
 
       {/* Floating Intriguing Questions Layer */}
       <IntriguingQuestions />
