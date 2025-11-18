@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useChat } from '@/contexts/ChatContext';
 import MessageList from '@/components/chat/MessageList';
 import MessageInput from '@/components/chat/MessageInput';
+import Footer from '@/components/Footer';
 import type { LeadFormData } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'wouter';
@@ -309,6 +310,9 @@ export default function Chat() {
         onSend={handleSendMessage}
         disabled={state.isStreaming}
       />
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

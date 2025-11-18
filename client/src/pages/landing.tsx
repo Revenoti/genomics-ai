@@ -1,10 +1,11 @@
 import IntriguingQuestions from '@/components/IntriguingQuestions';
 import HeroSection from '@/components/HeroSection';
+import Footer from '@/components/Footer';
 import logoUrl from '@assets/logo2_1763479558697.png';
 
 export default function Landing() {
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden flex flex-col">
       {/* Gradient Background */}
       <div 
         className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))]"
@@ -38,7 +39,14 @@ export default function Landing() {
       <IntriguingQuestions />
 
       {/* Hero Content */}
-      <HeroSection />
+      <div className="flex-1">
+        <HeroSection />
+      </div>
+
+      {/* Footer */}
+      <div className="relative z-20">
+        <Footer />
+      </div>
     </div>
   );
 }
