@@ -61,26 +61,25 @@ export default function ImageCarousel() {
             />
           </div>
         ))}
-      </div>
-
-      {/* Navigation Dots */}
-      <div className="flex justify-center gap-3 mt-4 md:mt-6">
-        {SERVICE_CARDS.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            data-testid={`carousel-dot-${index}`}
-            className={`relative rounded-full transition-all duration-300 ${
-              index === currentIndex
-                ? 'bg-primary w-10 h-2.5'
-                : 'bg-white/40 hover:bg-white/60 w-2.5 h-2.5'
-            }`}
-            style={{ minWidth: '44px', minHeight: '44px', padding: '20px 16px' }}
-            aria-label={`Go to slide ${index + 1}`}
-          >
-            <span className="sr-only">Slide {index + 1}</span>
-          </button>
-        ))}
+        
+        {/* Navigation Dots - Absolutely Positioned Overlay */}
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex justify-center gap-3 z-10">
+          {SERVICE_CARDS.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              data-testid={`carousel-dot-${index}`}
+              className={`rounded-full transition-all duration-300 min-w-[44px] min-h-[44px] p-5 flex items-center justify-center ${
+                index === currentIndex
+                  ? 'bg-primary w-10 h-2.5'
+                  : 'bg-white/40 hover:bg-white/60 w-2.5 h-2.5'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            >
+              <span className="sr-only">Slide {index + 1}</span>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
