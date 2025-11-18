@@ -236,14 +236,14 @@ export default function Chat() {
             <img 
               src={logoUrl} 
               alt="Functional Genomic Medicine Logo" 
-              className="h-10 w-10 md:h-12 md:w-12 hover-elevate rounded-md cursor-pointer"
+              className="h-12 w-12 md:h-14 md:w-14 hover-elevate rounded-md cursor-pointer"
               data-testid="img-logo-header"
             />
           </Link>
           <h1 className="text-base md:text-lg font-semibold text-foreground" data-testid="chat-header">
             Genomics AI Assistant
           </h1>
-          <div className="w-10 md:w-12" />
+          <div className="w-12 md:w-14" />
         </div>
       </header>
 
