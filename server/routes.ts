@@ -23,11 +23,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { sessionId, message, messages: messageHistory } = req.body;
 
+      console.log('[CHAT] Incoming request - sessionId:', sessionId, 'messageLength:', message?.length);
+
       // Validate session
       let session = sessionId ? await storage.getChatSession(sessionId) : null;
       
       if (!session) {
+        console.log('[CHAT] Creating new session');
         session = await storage.createChatSession({ turnCount: "0", formSubmitted: "false" });
+        console.log('[CHAT] New session created with ID:', session.id);
+      } else {
+        console.log('[CHAT] Found existing session:', session.id, 'turnCount:', session.turnCount, 'formSubmitted:', session.formSubmitted);
       }
 
       // Store user message
@@ -40,13 +46,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Increment turn count
       const turnCount = parseInt(session.turnCount) + 1;
+      console.log('[CHAT] Incrementing turnCount from', session.turnCount, 'to', turnCount);
       await storage.updateChatSession(session.id, {
         turnCount: turnCount.toString(),
       });
 
       // Check if we should trigger the form
       const formAlreadySubmitted = session.formSubmitted === "true";
-      if (!formAlreadySubmitted && shouldTriggerForm(turnCount, message)) {
+      const shouldTrigger = shouldTriggerForm(turnCount, message);
+      console.log('[CHAT] Form trigger check - turnCount:', turnCount, 'formAlreadySubmitted:', formAlreadySubmitted, 'shouldTrigger:', shouldTrigger, 'message:', message.substring(0, 50));
+      
+      if (!formAlreadySubmitted && shouldTrigger) {
+        console.log('[CHAT] TRIGGERING FORM - Returning form JSON response');
         // Update session to indicate form should be shown
         await storage.updateChatSession(session.id, {
           metadata: { formTriggered: true } as any,
@@ -60,6 +71,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         return;
       }
+
+      console.log('[CHAT] Not triggering form - proceeding with streaming response');
 
       // Perform RAG search to get relevant context
       const ragResults = await performRAGSearch(message);

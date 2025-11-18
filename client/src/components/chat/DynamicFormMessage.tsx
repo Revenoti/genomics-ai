@@ -38,6 +38,12 @@ export default function DynamicFormMessage({ onSubmit, message }: DynamicFormMes
     },
   });
 
+  const handleSubmit = (data: LeadFormData) => {
+    console.log('Form submitted with data:', data);
+    console.log('Form errors:', form.formState.errors);
+    onSubmit(data);
+  };
+
   return (
     <div className="flex gap-3 mr-auto max-w-[95%]" data-testid="form-message">
       <Avatar className="w-10 h-10 flex-shrink-0">
@@ -50,7 +56,7 @@ export default function DynamicFormMessage({ onSubmit, message }: DynamicFormMes
         <p className="text-base leading-relaxed mb-6">{message}</p>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
             <FormField
               control={form.control}
               name="fullName"
@@ -94,7 +100,7 @@ export default function DynamicFormMessage({ onSubmit, message }: DynamicFormMes
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium">Who is this consultation for?</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger data-testid="select-consultation-for">
                         <SelectValue placeholder="Select an option" />
@@ -134,10 +140,10 @@ export default function DynamicFormMessage({ onSubmit, message }: DynamicFormMes
             <FormField
               control={form.control}
               name="triedOtherTreatments"
-              render={({ field }) => (
+              render={({ field}) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium">Have you tried other treatments?</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger data-testid="select-tried-treatments">
                         <SelectValue placeholder="Select an option" />

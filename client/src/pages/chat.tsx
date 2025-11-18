@@ -18,6 +18,8 @@ export default function Chat() {
   }, []);
 
   const handleSendMessage = async (content: string) => {
+    console.log('[FRONTEND] Sending message, current sessionId:', state.sessionId);
+    
     // Add user message
     const userMessage = {
       id: Date.now().toString(),
@@ -29,14 +31,17 @@ export default function Chat() {
     dispatch({ type: 'SET_STREAMING', payload: true });
 
     try {
+      const requestBody = {
+        sessionId: state.sessionId === 'pending' ? null : state.sessionId,
+        message: content,
+        messages: state.messages.map(m => ({ role: m.role, content: m.content })),
+      };
+      console.log('[FRONTEND] Request body sessionId:', requestBody.sessionId);
+      
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId: state.sessionId === 'pending' ? null : state.sessionId,
-          message: content,
-          messages: state.messages.map(m => ({ role: m.role, content: m.content })),
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -45,9 +50,14 @@ export default function Chat() {
 
       // Check if it's a form trigger
       const contentType = response.headers.get('content-type');
+      console.log('[FRONTEND] Response content-type:', contentType);
+      
       if (contentType?.includes('application/json')) {
         const data = await response.json();
+        console.log('[FRONTEND] JSON response data:', data);
+        
         if (data.type === 'form') {
+          console.log('[FRONTEND] Form trigger received! Setting sessionId:', data.sessionId);
           dispatch({ type: 'SET_SESSION_ID', payload: data.sessionId });
           dispatch({ type: 'SHOW_FORM', payload: true });
           dispatch({ type: 'SET_STREAMING', payload: false });
@@ -112,7 +122,11 @@ export default function Chat() {
   };
 
   const handleFormSubmit = async (data: LeadFormData) => {
+    console.log('handleFormSubmit called with data:', data);
+    console.log('Current sessionId:', state.sessionId);
+    
     try {
+      console.log('Sending POST to /api/leads');
       const response = await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -122,13 +136,19 @@ export default function Chat() {
         }),
       });
 
+      console.log('Response status:', response.status);
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Response not OK:', errorText);
         throw new Error('Failed to submit form');
       }
 
       const result = await response.json();
+      console.log('Form submission result:', result);
       
+      console.log('Dispatching SET_FORM_DATA');
       dispatch({ type: 'SET_FORM_DATA', payload: data });
+      console.log('Dispatching SHOW_FORM false');
       dispatch({ type: 'SHOW_FORM', payload: false });
 
       // Add confirmation message
@@ -138,12 +158,14 @@ export default function Chat() {
         content: result.message || 'Thank you for providing that information. It will help me guide you more effectively. Let me analyze your needs and provide a personalized recommendation.',
         timestamp: new Date(),
       };
+      console.log('Adding confirmation message');
       dispatch({ type: 'ADD_MESSAGE', payload: confirmationMessage });
 
       toast({
         title: 'Success',
         description: 'Your information has been submitted.',
       });
+      console.log('Form submission complete');
     } catch (error) {
       console.error('Form submission error:', error);
       toast({
