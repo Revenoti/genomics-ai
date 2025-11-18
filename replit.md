@@ -32,6 +32,11 @@ Preferred communication style: Simple, everyday language.
 - Custom CSS variables for theme consistency (gradients, accent colors, borders)
 - Typography system using Inter for body text and Sora for headings to convey medical authority
 
+**Asset Handling**:
+- All static assets (images, logos) imported using Vite's `@assets` alias
+- Carousel service images use import-based approach for proper bundling and optimization
+- Asset imports ensure proper cache-busting and production build optimization
+
 ### Backend Architecture
 
 **Server Framework**: Express.js running on Node.js with TypeScript
