@@ -8,6 +8,10 @@ export default function IntriguingQuestions() {
   const [, setLocation] = useLocation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  // Initialize isMobile based on current window width to avoid flash on first render
+  const [isMobile, setIsMobile] = useState(() => 
+    typeof window !== 'undefined' && window.innerWidth < 640
+  );
   
   // Ref-based state for animation loop
   const phaseRef = useRef<AnimationPhase>('fadeIn');
@@ -15,6 +19,20 @@ export default function IntriguingQuestions() {
   const phaseStartTime = useRef(performance.now());
   const animationFrame = useRef<number | null>(null);
   const isVisibleRef = useRef(false);
+
+  // Mobile viewport detection (Tailwind sm breakpoint = 640px)
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    
+    // Check on mount
+    checkMobile();
+    
+    // Listen for resize
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     // Single RAF loop with no dependencies - runs once
@@ -93,6 +111,22 @@ export default function IntriguingQuestions() {
     setLocation('/chat');
   };
 
+  // Mobile positioning override: fixed top-right position on mobile
+  // Always set position: fixed to override hover-elevate classes
+  // Explicitly clear left axis since all positions use right
+  const positionStyles = isMobile 
+    ? { 
+        position: 'fixed' as const, 
+        top: '16%', 
+        right: '6%', 
+        left: 'auto'
+      }
+    : { 
+        position: 'fixed' as const, 
+        ...currentPosition,
+        left: 'auto'  // All desktop positions use right, so clear left
+      };
+
   return (
     <button
       onClick={handleQuestionClick}
@@ -103,7 +137,7 @@ export default function IntriguingQuestions() {
                  transition-all duration-1000 will-change-[opacity,transform]
                  animate-pulse-border"
       style={{
-        ...currentPosition,
+        ...positionStyles,
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateY(0)' : 'translateY(10px)',
         textShadow: '0 2px 10px rgba(0, 0, 0, 0.5)',
