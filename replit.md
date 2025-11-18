@@ -34,10 +34,17 @@ Preferred communication style: Simple, everyday language.
 - Typography system using Inter for body text and Sora for headings to convey medical authority
 
 **Branding**:
-- Clinic logo (`logo_1763472194877.png`) displayed in top-left corner on all pages
+- Clinic logo (`logo2_1763479558697.png`) - Enhanced transparent logo with colorful DNA helix, green leaves, and circular rainbow gradient
 - Landing page: Logo positioned absolutely with z-index for visibility over gradient background
 - Chat header: Logo integrated into sticky header, clickable to return to home page
 - Responsive sizing: 48px mobile / 64px desktop (landing), 40px mobile / 48px desktop (chat)
+- Logo publicly accessible at `/logo2_1763479558697.png` for Open Graph social sharing
+
+**SEO & Social Sharing**:
+- Custom domain: genomic-ai.com
+- Open Graph meta tags with CRO-optimized marketing copy
+- Twitter Card integration for enhanced social media previews
+- og:image configured with clinic logo for rich preview cards on Facebook, LinkedIn, Twitter
 
 **Asset Handling**:
 - All static assets (images, logos) imported using Vite's `@assets` alias
