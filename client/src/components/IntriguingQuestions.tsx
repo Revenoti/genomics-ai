@@ -111,14 +111,14 @@ export default function IntriguingQuestions() {
     setLocation('/chat');
   };
 
-  // Mobile positioning override: fixed top-right position on mobile
+  // Mobile positioning override: fixed header position on mobile
   // Always set position: fixed to override hover-elevate classes
   // Explicitly clear left axis since all positions use right
   const positionStyles = isMobile 
     ? { 
         position: 'fixed' as const, 
-        top: '16%', 
-        right: '6%', 
+        top: '12px',  // Header-aligned positioning
+        right: '12px',  // Consistent edge spacing
         left: 'auto'
       }
     : { 
