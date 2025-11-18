@@ -97,11 +97,10 @@ export default function IntriguingQuestions() {
     <button
       onClick={handleQuestionClick}
       data-testid={`question-${currentIndex}`}
-      className="fixed z-10 max-w-xs md:max-w-md text-white text-sm md:text-base font-medium 
-                 cursor-pointer hover-elevate active-elevate-2 rounded-lg px-4 py-3
+      className="fixed z-10 max-w-[280px] sm:max-w-xs md:max-w-md text-white text-xs sm:text-sm md:text-base font-medium 
+                 cursor-pointer hover-elevate active-elevate-2 rounded-lg px-3 py-2 sm:px-4 sm:py-3
                  bg-black/20 backdrop-blur-sm border border-white/20
-                 transition-all duration-1000 will-change-[opacity,transform]
-                 hidden sm:block"
+                 transition-all duration-1000 will-change-[opacity,transform]"
       style={{
         ...currentPosition,
         opacity: isVisible ? 1 : 0,
