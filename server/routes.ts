@@ -149,8 +149,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return;
       }
 
-      // Validate form data using Zod schema
-      const validatedData = insertLeadSchema.parse(formData);
+      // Validate form data using Zod schema (omit sessionId since it's extracted separately)
+      const leadFormSchema = insertLeadSchema.omit({ sessionId: true });
+      const validatedData = leadFormSchema.parse(formData);
 
       // Store lead
       const lead = await storage.createLead({

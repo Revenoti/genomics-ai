@@ -3,6 +3,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { insertLeadSchema, type LeadFormData } from '@shared/schema';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+
+// Client-side form schema - omit sessionId since it's managed by ChatContext
+const leadFormSchema = insertLeadSchema.omit({ sessionId: true });
 import {
   Form,
   FormControl,
@@ -28,7 +31,7 @@ interface DynamicFormMessageProps {
 
 export default function DynamicFormMessage({ onSubmit, message }: DynamicFormMessageProps) {
   const form = useForm<LeadFormData>({
-    resolver: zodResolver(insertLeadSchema),
+    resolver: zodResolver(leadFormSchema),
     defaultValues: {
       fullName: '',
       email: '',
@@ -38,10 +41,21 @@ export default function DynamicFormMessage({ onSubmit, message }: DynamicFormMes
     },
   });
 
+  console.log('[FORM] Current form state:', {
+    isValid: form.formState.isValid,
+    isSubmitting: form.formState.isSubmitting,
+    errors: form.formState.errors,
+    values: form.getValues(),
+  });
+
   const handleSubmit = (data: LeadFormData) => {
-    console.log('Form submitted with data:', data);
-    console.log('Form errors:', form.formState.errors);
+    console.log('[FORM] handleSubmit called! Data:', data);
+    console.log('[FORM] Form errors:', form.formState.errors);
     onSubmit(data);
+  };
+  
+  const handleInvalidSubmit = (errors: any) => {
+    console.log('[FORM] Form validation FAILED! Errors:', errors);
   };
 
   return (
@@ -56,7 +70,7 @@ export default function DynamicFormMessage({ onSubmit, message }: DynamicFormMes
         <p className="text-base leading-relaxed mb-6">{message}</p>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
+          <form onSubmit={form.handleSubmit(handleSubmit, handleInvalidSubmit)} className="space-y-5">
             <FormField
               control={form.control}
               name="fullName"
@@ -100,7 +114,7 @@ export default function DynamicFormMessage({ onSubmit, message }: DynamicFormMes
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium">Who is this consultation for?</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger data-testid="select-consultation-for">
                         <SelectValue placeholder="Select an option" />
@@ -143,7 +157,7 @@ export default function DynamicFormMessage({ onSubmit, message }: DynamicFormMes
               render={({ field}) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium">Have you tried other treatments?</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger data-testid="select-tried-treatments">
                         <SelectValue placeholder="Select an option" />
