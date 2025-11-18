@@ -16,11 +16,8 @@
   # Directory containing serverless functions
   directory = "netlify/functions"
   
-  # Function bundler
+  # Function bundler (automatically tree-shakes and bundles only required dependencies)
   node_bundler = "esbuild"
-  
-  # Include node_modules in function bundle
-  included_files = ["node_modules/**"]
 
 # Redirects and Rewrites
 [[redirects]]

@@ -1,0 +1,75 @@
+Deploying
+Deploying
+Failed
+6:06:57 PM: The function exceeds the maximum size of 250 MB
+6:06:57 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
+6:06:52 PM: Deploy site                                                   
+6:06:52 PM: ────────────────────────────────────────────────────────────────
+6:06:52 PM: ​
+6:06:52 PM: Starting to deploy site from 'dist/public'
+6:06:53 PM: Calculating files to upload
+6:06:53 PM: 12 new file(s) to upload
+6:06:53 PM: 1 new function(s) to upload
+6:06:57 PM: Failed to upload file: index
+6:06:57 PM: Section completed: deploying
+6:06:57 PM: ​
+6:06:57 PM: Error deploying                                               
+6:06:57 PM: ────────────────────────────────────────────────────────────────
+6:06:57 PM: ​
+6:06:57 PM:   Error message
+6:06:57 PM:   Deploy did not succeed with HTTP Error 400: [PUT /deploys/{deploy_id}/functions/{name}][400] uploadDeployFunction default  &{Code:400 Message:The function exceeds the maximum size of 250 MB}
+6:06:57 PM: ​
+6:06:57 PM:   Error location
+6:06:57 PM:   At deploy the stage with HTTP status code '400'
+6:06:57 PM: ​
+6:06:57 PM:   Resolved config
+6:06:57 PM:   build:
+6:06:57 PM:     command: npm install && npm run build
+6:06:57 PM:     commandOrigin: config
+6:06:57 PM:     environment:
+6:06:57 PM:       - DATABASE_URL
+6:06:57 PM:       - OPENAI_API_KEY
+6:06:57 PM:       - SESSION_SECRET
+6:06:57 PM:       - SUPABASE_ANON_KEY
+6:06:57 PM:       - SUPABASE_URL
+6:06:57 PM:       - NODE_VERSION
+6:06:57 PM:     publish: /opt/build/repo/dist/public
+6:06:57 PM:     publishOrigin: config
+6:06:57 PM:   functions:
+6:06:57 PM:     "*":
+6:06:57 PM:       included_files:
+6:06:57 PM:         - node_modules/**
+      node_bundler: esbuild
+  functionsDirectory: /opt/build/repo/netlify/functions
+  headers:
+    - for: /*
+      values:
+        Cache-Control: public, max-age=0, must-revalidate
+        Referrer-Policy: strict-origin-when-cross-origin
+        X-Content-Type-Options: nosniff
+        X-Frame-Options: DENY
+        X-XSS-Protection: 1; mode=block
+    - for: /assets/*
+      values:
+        Cache-Control: public, max-age=31536000, immutable
+    - for: /*.js
+      values:
+        Cache-Control: public, max-age=31536000, immutable
+    - for: /*.css
+      values:
+        Cache-Control: public, max-age=31536000, immutable
+    - for: /logo2_1763479558697.png
+      values:
+        Cache-Control: public, max-age=86400, must-revalidate
+  headersOrigin: config
+  redirects:
+    - force: true
+      from: /api/*
+      status: 200
+      to: /.netlify/functions/index/:splat
+    - from: /*
+      status: 200
+      to: /index.html
+  redirectsOrigin: config
+6:06:57 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+6:06:57 PM: Failing build: Failed to build site
