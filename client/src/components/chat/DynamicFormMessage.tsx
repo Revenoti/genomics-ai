@@ -1,0 +1,169 @@
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { insertLeadSchema, type LeadFormData } from '@shared/schema';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+interface DynamicFormMessageProps {
+  onSubmit: (data: LeadFormData) => void;
+  message: string;
+}
+
+export default function DynamicFormMessage({ onSubmit, message }: DynamicFormMessageProps) {
+  const form = useForm<LeadFormData>({
+    resolver: zodResolver(insertLeadSchema),
+    defaultValues: {
+      fullName: '',
+      email: '',
+      consultationFor: 'myself',
+      primaryHealthConcern: '',
+      triedOtherTreatments: 'no',
+    },
+  });
+
+  return (
+    <div className="flex gap-3 mr-auto max-w-[95%]" data-testid="form-message">
+      <Avatar className="w-10 h-10 flex-shrink-0">
+        <AvatarFallback className="bg-primary text-primary-foreground text-sm font-semibold">
+          FG
+        </AvatarFallback>
+      </Avatar>
+
+      <div className="flex-1 px-6 py-5 rounded-2xl rounded-tl-sm bg-card text-card-foreground border border-card-border">
+        <p className="text-base leading-relaxed mb-6">{message}</p>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <FormField
+              control={form.control}
+              name="fullName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">Full Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Enter your full name"
+                      data-testid="input-full-name"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">Email Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder="your.email@example.com"
+                      data-testid="input-email"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="consultationFor"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">Who is this consultation for?</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger data-testid="select-consultation-for">
+                        <SelectValue placeholder="Select an option" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="myself">Myself</SelectItem>
+                      <SelectItem value="my-child">My Child</SelectItem>
+                      <SelectItem value="my-spouse">My Spouse</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="primaryHealthConcern"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">Primary Health Concern</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="Describe your main health concern or challenge..."
+                      className="min-h-[120px] resize-vertical"
+                      data-testid="textarea-health-concern"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="triedOtherTreatments"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">Have you tried other treatments?</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger data-testid="select-tried-treatments">
+                        <SelectValue placeholder="Select an option" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="yes">Yes</SelectItem>
+                      <SelectItem value="no">No</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button
+              type="submit"
+              className="w-full md:w-auto md:ml-auto md:flex"
+              disabled={form.formState.isSubmitting}
+              data-testid="button-submit-form"
+            >
+              {form.formState.isSubmitting ? 'Submitting...' : 'Submit Information'}
+            </Button>
+          </form>
+        </Form>
+      </div>
+    </div>
+  );
+}
