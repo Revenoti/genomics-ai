@@ -5,7 +5,7 @@ import MessageInput from '@/components/chat/MessageInput';
 import type { LeadFormData } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'wouter';
-import logoUrl from '@assets/logo_1763472194877.png';
+import logoUrl from '@assets/logo2_1763479558697.png';
 
 export default function Chat() {
   const { state, dispatch } = useChat();

@@ -1,6 +1,6 @@
 import IntriguingQuestions from '@/components/IntriguingQuestions';
 import HeroSection from '@/components/HeroSection';
-import logoUrl from '@assets/logo_1763472194877.png';
+import logoUrl from '@assets/logo2_1763479558697.png';
 
 export default function Landing() {
   return (
