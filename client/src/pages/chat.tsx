@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useChat } from '@/contexts/ChatContext';
 import MessageList from '@/components/chat/MessageList';
 import MessageInput from '@/components/chat/MessageInput';
@@ -6,10 +6,23 @@ import type { LeadFormData } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'wouter';
 import logoUrl from '@assets/logo2_1763479558697.png';
+import { Button } from '@/components/ui/button';
+import { PlusCircle } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export default function Chat() {
   const { state, dispatch } = useChat();
   const { toast } = useToast();
+  const [showNewChatDialog, setShowNewChatDialog] = useState(false);
 
   // Load session from localStorage and restore message history
   useEffect(() => {
@@ -227,6 +240,21 @@ export default function Chat() {
     }
   };
 
+  const handleNewChat = () => {
+    console.log('[FRONTEND] Starting new chat - clearing session and resetting state');
+    // Clear localStorage session ID
+    localStorage.removeItem('genomic-ai-session-id');
+    // Reset chat state to initial state
+    dispatch({ type: 'RESET_CHAT' });
+    // Close dialog
+    setShowNewChatDialog(false);
+    // Show success toast
+    toast({
+      title: 'New Chat Started',
+      description: 'Your previous conversation has been saved.',
+    });
+  };
+
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Header */}
@@ -243,9 +271,35 @@ export default function Chat() {
           <h1 className="text-base md:text-lg font-semibold text-foreground" data-testid="chat-header">
             Genomics AI Assistant
           </h1>
-          <div className="w-12 md:w-14" />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowNewChatDialog(true)}
+            data-testid="button-new-chat"
+            className="hover-elevate"
+          >
+            <PlusCircle className="h-5 w-5" />
+          </Button>
         </div>
       </header>
+
+      {/* New Chat Confirmation Dialog */}
+      <AlertDialog open={showNewChatDialog} onOpenChange={setShowNewChatDialog}>
+        <AlertDialogContent data-testid="dialog-new-chat">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Start a New Chat?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your current conversation will be saved in our database. You can start fresh with a new session.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel data-testid="button-cancel-new-chat">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleNewChat} data-testid="button-confirm-new-chat">
+              Start New Chat
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Messages */}
       <MessageList onFormSubmit={handleFormSubmit} />
