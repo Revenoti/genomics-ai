@@ -6,7 +6,7 @@
   <p><strong>AI-Powered Precision Medicine Consultation Platform</strong></p>
   
   <p>
-    <a href="https://genomic-ai.com">Live Demo</a> •
+    <a href="https://genomic-ai.io">Live Demo</a> •
     <a href="https://functionalgenomicmedicine.com">Clinic Website</a>
   </p>
 </div>
@@ -162,6 +162,78 @@ This creates the necessary tables and indexes in your database. The application 
    http://localhost:5000
    ```
 
+## Deployment
+
+### Netlify Deployment
+
+This application is configured for easy deployment to Netlify with serverless functions.
+
+#### Prerequisites
+- [Netlify account](https://www.netlify.com/)
+- GitHub repository (or GitLab/Bitbucket)
+
+#### Quick Deploy
+
+1. **Connect your repository to Netlify**
+   - Log in to Netlify
+   - Click "Add new site" → "Import an existing project"
+   - Connect your Git provider and select this repository
+
+2. **Configure build settings** (auto-configured via `netlify.toml`)
+   - Build command: `npm install && npm run build`
+   - Publish directory: `dist/public`
+   - Functions directory: `netlify/functions`
+
+3. **Set environment variables** in Netlify dashboard:
+   ```
+   OPENAI_API_KEY=your_openai_api_key
+   SUPABASE_URL=your_supabase_url (optional)
+   SUPABASE_ANON_KEY=your_supabase_anon_key (optional)
+   SESSION_SECRET=your_random_secret_string
+   DATABASE_URL=your_postgresql_connection_string (recommended)
+   ```
+
+4. **Deploy**
+   - Click "Deploy site"
+   - Netlify will build and deploy your application
+   - Your site will be live at `https://your-site-name.netlify.app`
+
+5. **Configure custom domain** (optional)
+   - Go to "Domain settings" in Netlify
+   - Add your custom domain (e.g., `genomic-ai.io`)
+   - Update DNS records as instructed
+   - SSL certificate is automatically provisioned
+
+#### Manual Deployment
+
+```bash
+# Install Netlify CLI
+npm install -g netlify-cli
+
+# Login to Netlify
+netlify login
+
+# Deploy to production
+netlify deploy --prod
+```
+
+#### Important Notes
+
+- **Environment Variables**: All required secrets must be set in Netlify's environment variables UI
+- **Database**: Highly recommended to set `DATABASE_URL` for production to enable persistent session storage
+- **Supabase**: Optional - falls back to built-in context if not configured
+- **Custom Domain**: Update Open Graph URLs in `client/index.html` to match your domain
+- **Build Time**: First build may take 2-3 minutes; subsequent builds are faster with caching
+
+### Alternative: Replit Deployment
+
+This application can also be deployed directly on Replit:
+
+1. Import repository to Replit
+2. Set environment variables in Secrets
+3. Click "Run" - application starts on port 5000
+4. Use Replit's built-in deployment for production
+
 ## Project Structure
 
 ```
@@ -207,6 +279,11 @@ This creates the necessary tables and indexes in your database. The application 
 ├── attached_assets/          # User-uploaded assets
 │   └── service_images/      # Carousel images
 │
+├── netlify/                  # Netlify deployment
+│   └── functions/           # Serverless functions
+│       └── index.ts         # API handler for Netlify
+│
+├── netlify.toml             # Netlify configuration
 └── README.md                # This file
 ```
 
@@ -457,6 +534,15 @@ This project is proprietary software. Unauthorized copying, modification, distri
 - Send button now uses `flex-shrink-0` to maintain size
 - Improved mobile footer formatting with clean two-line address display
 
+**Deployment & Social Sharing**
+- Updated custom domain from genomic-ai.com to **genomic-ai.io** across all meta tags
+- Configured Open Graph and Twitter Card meta tags for beautiful social media previews
+- Created `netlify.toml` with serverless functions, redirects, and security headers
+- Added Netlify serverless function wrapper in `netlify/functions/index.ts`
+- Comprehensive Netlify deployment documentation in README
+- One-click deployment ready with environment variable configuration
+- Automatic SSL certificate provisioning for custom domains
+
 ## Support
 
 For questions or support:
@@ -476,6 +562,6 @@ For questions or support:
 <div align="center">
   <p>Built with ❤️ for Functional Genomic Medicine</p>
   <p>
-    <a href="https://genomic-ai.com">Visit Live Application</a>
+    <a href="https://genomic-ai.io">Visit Live Application</a>
   </p>
 </div>

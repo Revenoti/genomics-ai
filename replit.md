@@ -41,10 +41,10 @@ Preferred communication style: Simple, everyday language.
 - Logo publicly accessible at `/logo2_1763479558697.png` for Open Graph social sharing
 
 **SEO & Social Sharing**:
-- Custom domain: genomic-ai.com
+- Custom domain: genomic-ai.io
 - Open Graph meta tags with CRO-optimized marketing copy
 - Twitter Card integration for enhanced social media previews
-- og:image configured with clinic logo for rich preview cards on Facebook, LinkedIn, Twitter
+- og:image configured with clinic logo for rich preview cards on Facebook, LinkedIn, Twitter, WhatsApp
 
 **Asset Handling**:
 - All static assets (images, logos) imported using Vite's `@assets` alias
@@ -142,3 +142,17 @@ Future consideration: May add authentication for returning users to access conve
 - Vite for frontend development and building
 - esbuild for backend bundling
 - tsx for TypeScript execution in development
+
+### Deployment
+
+**Current Deployment**: 
+- Custom domain: genomic-ai.io
+- Configured for Netlify deployment with serverless functions
+- `netlify.toml` configuration for build settings, redirects, and security headers
+- Serverless function wrapper in `netlify/functions/index.ts`
+- Environment variables managed via Netlify UI
+- Automatic SSL certificate provisioning
+
+**Alternative Deployment**: 
+- Can be deployed on Replit with built-in deployment features
+- Vercel, Railway, or Render also supported
