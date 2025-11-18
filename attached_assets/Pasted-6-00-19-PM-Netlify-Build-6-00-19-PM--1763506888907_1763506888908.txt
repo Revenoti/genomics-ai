@@ -1,0 +1,137 @@
+6:00:19 PM: Netlify Build                                                 
+6:00:19 PM: ────────────────────────────────────────────────────────────────
+6:00:19 PM: ​
+6:00:19 PM: ❯ Version
+6:00:19 PM:   @netlify/build 35.3.5
+6:00:19 PM: ​
+6:00:19 PM: ❯ Flags
+6:00:19 PM:   accountId: 677af6f14f3ddff96f822800
+6:00:19 PM:   baseRelDir: true
+6:00:19 PM:   buildId: 691cfa6f7098210c0325c58f
+6:00:19 PM:   deployId: 691cfa6f7098210c0325c591
+6:00:19 PM: ​
+6:00:19 PM: ❯ Current directory
+6:00:19 PM:   /opt/build/repo
+6:00:19 PM: ​
+6:00:19 PM: ❯ Config file
+6:00:19 PM:   /opt/build/repo/netlify.toml
+6:00:19 PM: ​
+6:00:19 PM: ❯ Context
+6:00:19 PM:   production
+6:00:19 PM: ​
+6:00:19 PM: build.command from netlify.toml                               
+6:00:19 PM: ────────────────────────────────────────────────────────────────
+6:00:19 PM: ​
+6:00:19 PM: $ npm install && npm run build
+6:00:20 PM: up to date, audited 567 packages in 1s
+6:00:20 PM: 130 packages are looking for funding
+6:00:20 PM:   run `npm fund` for details
+6:00:20 PM: 9 vulnerabilities (3 low, 5 moderate, 1 high)
+6:00:20 PM: To address issues that do not require attention, run:
+6:00:20 PM:   npm audit fix
+6:00:20 PM: To address all issues (including breaking changes), run:
+6:00:20 PM:   npm audit fix --force
+6:00:20 PM: Run `npm audit` for details.
+6:00:20 PM: > rest-express@1.0.0 build
+6:00:20 PM: > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+6:00:20 PM: vite v5.4.20 building for production...
+6:00:20 PM: transforming...
+6:00:24 PM: A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+✓ 2014 modules transformed.
+6:00:24 PM: rendering chunks...
+6:00:24 PM: computing gzip size...
+6:00:24 PM: ../dist/public/index.html                                                                                            2.94 kB │ gzip:   0.85 kB
+6:00:24 PM: ../dist/public/assets/logo2_1763479558697-BHi2qfrm.png                                                             304.53 kB
+6:00:24 PM: ../dist/public/assets/2 Brain Optimization Testing for Cognitive Health _ Wellness_1763424265352-QvPqzXVG.png    1,475.82 kB
+6:00:24 PM: ../dist/public/assets/4 Medical Overview Complete Health Assessment_1763424265352-S_RA3wqw.png                   1,485.21 kB
+6:00:24 PM: ../dist/public/assets/5 Mental Wellness Testing for Clarity Focus _ Emotional Health_1763424265352-CKhQCz7X.png  1,545.41 kB
+6:00:24 PM: ../dist/public/assets/1 ASD PANDAS Mental Wellness Report_1763424265352-BbOz5vaF.png                             1,584.10 kB
+6:00:24 PM: ../dist/public/assets/6 Mighty Mind and Body Combination_1763424265352-BexRWMDp.png                              1,590.78 kB
+6:00:24 PM: ../dist/public/assets/3 Executive Combination_1763424265352-CxFRg4xP.png                                         1,774.96 kB
+6:00:24 PM: ../dist/public/assets/index-Bdr1z8Hb.css                                                                            96.75 kB │ gzip:  14.84 kB
+6:00:24 PM: ../dist/public/assets/index-8MyAuQVr.js                                                                            585.77 kB │ gzip: 182.11 kB
+6:00:24 PM: 
+6:00:24 PM: (!) Some chunks are larger than 500 kB after minification. Consider:
+6:00:24 PM: - Using dynamic import() to code-split the application
+6:00:24 PM: - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+6:00:24 PM: - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+6:00:24 PM: ✓ built in 3.58s
+6:00:24 PM:   dist/index.js  28.7kb
+6:00:24 PM: ⚡ Done in 4ms
+6:00:24 PM: ​
+6:00:24 PM: (build.command completed in 5.3s)
+6:00:24 PM: ​
+6:00:24 PM: Functions bundling                                            
+6:00:24 PM: ────────────────────────────────────────────────────────────────
+6:00:24 PM: ​
+6:00:24 PM: Packaging Functions from netlify/functions directory:
+6:00:24 PM:  - index.ts
+6:00:24 PM: ​
+6:00:24 PM: ✘ [ERROR] Top-level await is currently not supported with the "cjs" output format
+6:00:24 PM:     netlify/functions/index.ts:51:0:
+6:00:24 PM:       51 │ await registerRoutes(app);
+6:00:24 PM:          ╵ ~~~~~
+6:00:25 PM: ​
+6:00:25 PM: Bundling of function "index" failed                           
+6:00:25 PM: ────────────────────────────────────────────────────────────────
+6:00:25 PM: ​
+6:00:25 PM:   Error message
+6:00:25 PM:   Build failed with 1 error:
+6:00:25 PM:   netlify/functions/index.ts:51:0: ERROR: Top-level await is currently not supported with the "cjs" output format
+6:00:25 PM: ​
+6:00:25 PM:   Error location
+6:00:25 PM:   While bundling function "index"
+6:00:25 PM: ​
+6:00:25 PM:   Resolved config
+6:00:25 PM:   build:
+6:00:25 PM:     command: npm install && npm run build
+6:00:25 PM:     commandOrigin: config
+6:00:25 PM:     environment:
+6:00:25 PM:       - DATABASE_URL
+6:00:25 PM:       - OPENAI_API_KEY
+6:00:25 PM:       - SESSION_SECRET
+6:00:25 PM:       - SUPABASE_ANON_KEY
+6:00:25 PM:       - SUPABASE_URL
+6:00:25 PM:       - NODE_VERSION
+6:00:25 PM:     publish: /opt/build/repo/dist/public
+6:00:25 PM:     publishOrigin: config
+6:00:25 PM:   functions:
+6:00:25 PM:     "*":
+6:00:25 PM:       included_files:
+6:00:25 PM:         - node_modules/**
+      node_bundler: esbuild
+  functionsDirectory: /opt/build/repo/netlify/functions
+  headers:
+    - for: /*
+      values:
+        Cache-Control: public, max-age=0, must-revalidate
+        Referrer-Policy: strict-origin-when-cross-origin
+        X-Content-Type-Options: nosniff
+        X-Frame-Options: DENY
+        X-XSS-Protection: 1; mode=block
+    - for: /assets/*
+      values:
+        Cache-Control: public, max-age=31536000, immutable
+    - for: /*.js
+      values:
+        Cache-Control: public, max-age=31536000, immutable
+    - for: /*.css
+      values:
+        Cache-Control: public, max-age=31536000, immutable
+    - for: /logo2_1763479558697.png
+      values:
+        Cache-Control: public, max-age=86400, must-revalidate
+  headersOrigin: config
+  redirects:
+    - force: true
+      from: /api/*
+      status: 200
+      to: /.netlify/functions/index/:splat
+    - from: /*
+      status: 200
+      to: /index.html
+  redirectsOrigin: config
+6:00:25 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+6:00:25 PM: Failing build: Failed to build site
+6:00:25 PM: Finished processing build request in 22.179s
+6:00:25 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
