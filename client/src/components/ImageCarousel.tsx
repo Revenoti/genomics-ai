@@ -1,6 +1,24 @@
 import { useState, useEffect } from 'react';
 import { SERVICE_CARDS, ANIMATION_TIMINGS } from '@shared/constants';
 
+// Import service images using @assets alias
+import asdPandasImage from '@assets/1 ASD PANDAS Mental Wellness Report_1763424265352.png';
+import brainOptimizationImage from '@assets/2 Brain Optimization Testing for Cognitive Health & Wellness_1763424265352.png';
+import executiveCombinationImage from '@assets/3 Executive Combination_1763424265352.png';
+import completeHealthImage from '@assets/4 Medical Overview Complete Health Assessment_1763424265352.png';
+import mentalWellnessImage from '@assets/5 Mental Wellness Testing for Clarity Focus & Emotional Health_1763424265352.png';
+import mightyMindBodyImage from '@assets/6 Mighty Mind and Body Combination_1763424265352.png';
+
+// Map image filenames to imported assets
+const imageMap: Record<string, string> = {
+  "1 ASD PANDAS Mental Wellness Report_1763424265352.png": asdPandasImage,
+  "2 Brain Optimization Testing for Cognitive Health & Wellness_1763424265352.png": brainOptimizationImage,
+  "3 Executive Combination_1763424265352.png": executiveCombinationImage,
+  "4 Medical Overview Complete Health Assessment_1763424265352.png": completeHealthImage,
+  "5 Mental Wellness Testing for Clarity Focus & Emotional Health_1763424265352.png": mentalWellnessImage,
+  "6 Mighty Mind and Body Combination_1763424265352.png": mightyMindBodyImage,
+};
+
 export default function ImageCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -32,7 +50,7 @@ export default function ImageCarousel() {
             data-testid={`carousel-slide-${index}`}
           >
             <img
-              src={`/attached_assets/${service.image}`}
+              src={imageMap[service.image]}
               alt={service.title}
               className="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.02]"
             />
