@@ -1,23 +1,19 @@
 import { 
-  type User, 
-  type InsertUser,
   type ChatSession,
   type InsertChatSession,
   type Message,
   type InsertMessage,
   type Lead,
-  type InsertLead
+  type InsertLead,
+  chatSessions,
+  messages as messagesTable,
+  leads as leadsTable
 } from "@shared/schema";
 import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import { db, isDatabaseConfigured } from './db';
+import { eq, asc } from 'drizzle-orm';
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
-  
   // Chat Sessions
   createChatSession(session: Partial<InsertChatSession>): Promise<ChatSession>;
   getChatSession(id: string): Promise<ChatSession | undefined>;
@@ -33,33 +29,14 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
   private chatSessions: Map<string, ChatSession>;
   private messages: Map<string, Message>;
   private leads: Map<string, Lead>;
 
   constructor() {
-    this.users = new Map();
     this.chatSessions = new Map();
     this.messages = new Map();
     this.leads = new Map();
-  }
-
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
   }
 
   // Chat Sessions
@@ -101,6 +78,7 @@ export class MemStorage implements IStorage {
     const message: Message = {
       id,
       ...insertMessage,
+      type: insertMessage.type || null,
       createdAt: new Date(),
     };
     this.messages.set(id, message);
@@ -131,4 +109,119 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database Storage Implementation
+export class DatabaseStorage implements IStorage {
+  // Chat Sessions
+  async createChatSession(insertSession: Partial<InsertChatSession>): Promise<ChatSession> {
+    if (!db) throw new Error('Database not configured');
+    
+    // Build the values object, omitting metadata if it's not provided
+    const values: any = {
+      turnCount: insertSession.turnCount || "0",
+      formSubmitted: insertSession.formSubmitted || "false",
+    };
+    
+    // Only include metadata if it exists and is not null
+    if (insertSession.metadata !== undefined && insertSession.metadata !== null) {
+      values.metadata = insertSession.metadata;
+    }
+    
+    console.log('[DatabaseStorage] Creating session with values:', values);
+    
+    // Using neon-serverless driver which fully supports .returning()
+    const result = await db
+      .insert(chatSessions)
+      .values(values)
+      .returning();
+    
+    console.log('[DatabaseStorage] Insert result:', result);
+    
+    const [session] = result;
+    if (!session) {
+      throw new Error('Failed to create chat session - no result returned from database');
+    }
+    
+    console.log('[DatabaseStorage] Created session:', session.id);
+    return session;
+  }
+
+  async getChatSession(id: string): Promise<ChatSession | undefined> {
+    if (!db) throw new Error('Database not configured');
+    
+    const [session] = await db
+      .select()
+      .from(chatSessions)
+      .where(eq(chatSessions.id, id))
+      .limit(1);
+    
+    return session;
+  }
+
+  async updateChatSession(id: string, updates: Partial<ChatSession>): Promise<ChatSession | undefined> {
+    if (!db) throw new Error('Database not configured');
+    
+    const [updated] = await db
+      .update(chatSessions)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(chatSessions.id, id))
+      .returning();
+    
+    return updated;
+  }
+
+  // Messages
+  async createMessage(insertMessage: InsertMessage): Promise<Message> {
+    if (!db) throw new Error('Database not configured');
+    
+    const [message] = await db.insert(messagesTable).values({
+      ...insertMessage,
+      type: insertMessage.type || null,
+    }).returning();
+    
+    return message;
+  }
+
+  async getMessagesBySession(sessionId: string): Promise<Message[]> {
+    if (!db) throw new Error('Database not configured');
+    
+    const messages = await db
+      .select()
+      .from(messagesTable)
+      .where(eq(messagesTable.sessionId, sessionId))
+      .orderBy(asc(messagesTable.createdAt));
+    
+    return messages;
+  }
+
+  // Leads
+  async createLead(insertLead: InsertLead): Promise<Lead> {
+    if (!db) throw new Error('Database not configured');
+    
+    const [lead] = await db.insert(leadsTable).values(insertLead).returning();
+    
+    return lead;
+  }
+
+  async getLeadsBySession(sessionId: string): Promise<Lead[]> {
+    if (!db) throw new Error('Database not configured');
+    
+    const leads = await db
+      .select()
+      .from(leadsTable)
+      .where(eq(leadsTable.sessionId, sessionId));
+    
+    return leads;
+  }
+}
+
+// Export the appropriate storage implementation
+// Use DatabaseStorage if database is configured, otherwise fall back to MemStorage
+export const storage: IStorage = isDatabaseConfigured() 
+  ? new DatabaseStorage() 
+  : new MemStorage();
+
+console.log(`[STORAGE] Using ${isDatabaseConfigured() ? 'DatabaseStorage (PostgreSQL)' : 'MemStorage (in-memory)'}`);
+

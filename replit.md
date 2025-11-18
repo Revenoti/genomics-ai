@@ -57,8 +57,12 @@ Preferred communication style: Simple, everyday language.
 
 **API Endpoints**:
 - `POST /api/chat` - Main chat endpoint with streaming support for AI responses
-- Handles session management, message storage, and form triggering logic
-- Returns streaming responses for real-time AI conversation or JSON for form triggers
+  - Handles session management, message storage, and form triggering logic
+  - Returns streaming responses for real-time AI conversation or JSON for form triggers
+- `GET /api/sessions/:sessionId/messages` - Fetch complete message history for a session
+  - Used on page load to restore conversation after refresh
+  - Returns session metadata (turnCount, formSubmitted) and all messages
+- `POST /api/leads` - Submit lead qualification form data
 
 **AI Integration**:
 - OpenAI GPT-5 integration via official SDK
@@ -72,9 +76,12 @@ Preferred communication style: Simple, everyday language.
 - Includes schema probing on boot to verify database availability
 
 **Session Management**:
-- In-memory storage implementation (MemStorage class) for chat sessions, messages, and leads
+- **DATABASE PERSISTENCE**: Full PostgreSQL implementation using Supabase with Drizzle ORM
+- SessionId stored in browser localStorage (`genomic-ai-session-id`) for cross-refresh persistence
+- Automatic session restoration on page load with complete message history
 - Session tracking includes turn count for determining when to trigger lead qualification forms
-- Supports migration to database-backed storage (structure ready for Drizzle ORM)
+- Form visibility state restored after page refresh (form messages persisted as type: "form")
+- All conversations, form submissions, and user data persisted to database for analytics
 
 **Form Triggering Logic**:
 - Dynamic form appears after 3-5 conversation turns or when user expresses strong interest
@@ -88,8 +95,9 @@ Preferred communication style: Simple, everyday language.
 - `messages` - Stores all chat messages with role, content, type, and timestamps
 - `leads` - Captures form submissions with user contact info and qualification details
 
-**Current Implementation**: In-memory storage for development/testing
-**Production Ready**: Schema defined and migration-ready for PostgreSQL via Drizzle
+**Current Implementation**: DatabaseStorage with Supabase PostgreSQL (production-ready)
+**Database Driver**: neon-serverless with WebSocket support for full PostgreSQL compatibility
+**Performance Optimization**: Index on `messages.session_id` for efficient history queries
 
 **Storage Interface Pattern**: IStorage interface allows easy swapping between in-memory and database implementations without changing business logic
 

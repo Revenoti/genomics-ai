@@ -11,12 +11,58 @@ export default function Chat() {
   const { state, dispatch } = useChat();
   const { toast } = useToast();
 
-  // Initialize session if needed
+  // Load session from localStorage and restore message history
   useEffect(() => {
-    if (!state.sessionId) {
-      // Session will be created on first message
-      dispatch({ type: 'SET_SESSION_ID', payload: 'pending' });
-    }
+    const loadSession = async () => {
+      const savedSessionId = localStorage.getItem('genomic-ai-session-id');
+      console.log('[FRONTEND] Loading session from localStorage:', savedSessionId);
+      
+      if (savedSessionId && savedSessionId !== 'pending') {
+        try {
+          // Fetch message history from server
+          const response = await fetch(`/api/sessions/${savedSessionId}/messages`);
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('[FRONTEND] Loaded message history:', data.messages.length, 'messages');
+            
+            // Restore session and messages
+            dispatch({ type: 'SET_SESSION_ID', payload: savedSessionId });
+            dispatch({ type: 'LOAD_MESSAGES', payload: data.messages.map((msg: any) => ({
+              ...msg,
+              timestamp: new Date(msg.timestamp),
+            }))});
+            
+            // Check if form should be shown (triggered but not yet submitted)
+            const hasFormMessage = data.messages.some((msg: any) => msg.type === 'form');
+            const formTriggeredButNotSubmitted = hasFormMessage && !data.formSubmitted;
+            
+            console.log('[FRONTEND] Form state on restore - hasFormMessage:', hasFormMessage, 'formSubmitted:', data.formSubmitted);
+            
+            if (formTriggeredButNotSubmitted) {
+              // Show form again since it was triggered but not submitted
+              console.log('[FRONTEND] Restoring form visibility (triggered but not submitted)');
+              dispatch({ type: 'SHOW_FORM', payload: true });
+            } else if (data.formSubmitted) {
+              console.log('[FRONTEND] Form already submitted in this session');
+            }
+          } else {
+            // Session not found, clear localStorage
+            console.log('[FRONTEND] Session not found on server, clearing localStorage');
+            localStorage.removeItem('genomic-ai-session-id');
+            dispatch({ type: 'SET_SESSION_ID', payload: 'pending' });
+          }
+        } catch (error) {
+          console.error('[FRONTEND] Failed to load session:', error);
+          dispatch({ type: 'SET_SESSION_ID', payload: 'pending' });
+        }
+      } else {
+        // No saved session, will create on first message
+        dispatch({ type: 'SET_SESSION_ID', payload: 'pending' });
+      }
+    };
+    
+    loadSession();
   }, []);
 
   const handleSendMessage = async (content: string) => {
@@ -60,6 +106,7 @@ export default function Chat() {
         
         if (data.type === 'form') {
           console.log('[FRONTEND] Form trigger received! Setting sessionId:', data.sessionId);
+          localStorage.setItem('genomic-ai-session-id', data.sessionId);
           dispatch({ type: 'SET_SESSION_ID', payload: data.sessionId });
           dispatch({ type: 'SHOW_FORM', payload: true });
           dispatch({ type: 'SET_STREAMING', payload: false });
@@ -97,6 +144,8 @@ export default function Chat() {
             if (data.sessionId) {
               if (sessionId === 'pending' || !sessionId) {
                 sessionId = data.sessionId;
+                console.log('[FRONTEND] Received sessionId from stream, saving to localStorage:', data.sessionId);
+                localStorage.setItem('genomic-ai-session-id', data.sessionId);
                 dispatch({ type: 'SET_SESSION_ID', payload: data.sessionId });
               }
             }

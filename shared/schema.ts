@@ -1,4 +1,4 @@
-import { pgTable, text, varchar, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, jsonb, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { sql } from "drizzle-orm";
@@ -11,7 +11,9 @@ export const messages = pgTable("messages", {
   content: text("content").notNull(),
   type: text("type"), // 'message' | 'form' | 'typing'
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  sessionIdIdx: index("messages_session_id_idx").on(table.sessionId),
+}));
 
 // Chat Sessions Table
 export const chatSessions = pgTable("chat_sessions", {

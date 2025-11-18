@@ -16,6 +16,7 @@ type ChatAction =
   | { type: 'SHOW_FORM'; payload: boolean }
   | { type: 'SET_FORM_DATA'; payload: LeadFormData | null }
   | { type: 'SET_SESSION_ID'; payload: string }
+  | { type: 'LOAD_MESSAGES'; payload: ChatMessage[] }
   | { type: 'RESET_CHAT' };
 
 const initialState: ChatState = {
@@ -57,6 +58,8 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
       return { ...state, formData: action.payload };
     case 'SET_SESSION_ID':
       return { ...state, sessionId: action.payload };
+    case 'LOAD_MESSAGES':
+      return { ...state, messages: action.payload };
     case 'RESET_CHAT':
       return initialState;
     default:

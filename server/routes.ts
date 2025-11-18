@@ -10,6 +10,39 @@ import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // Get message history for a session
+  app.get("/api/sessions/:sessionId/messages", async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      
+      // Validate session exists
+      const session = await storage.getChatSession(sessionId);
+      if (!session) {
+        res.status(404).json({ error: "Session not found" });
+        return;
+      }
+      
+      // Get messages for session
+      const messages = await storage.getMessagesBySession(sessionId);
+      
+      res.json({
+        sessionId: session.id,
+        turnCount: parseInt(session.turnCount),
+        formSubmitted: session.formSubmitted === "true",
+        messages: messages.map(msg => ({
+          id: msg.id,
+          role: msg.role,
+          content: msg.content,
+          type: msg.type,
+          timestamp: msg.createdAt,
+        })),
+      });
+    } catch (error) {
+      console.error('Get messages error:', error);
+      res.status(500).json({ error: "Failed to retrieve messages" });
+    }
+  });
+  
   // Chat endpoint with streaming support
   app.post("/api/chat", async (req, res) => {
     try {
@@ -58,6 +91,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!formAlreadySubmitted && shouldTrigger) {
         console.log('[CHAT] TRIGGERING FORM - Returning form JSON response');
+        
+        const formMessage = "To help me provide the best recommendation, I need to gather a little more information. Please fill out the brief form below.";
+        
+        // Store form trigger as a message for persistence
+        await storage.createMessage({
+          sessionId: session.id,
+          role: "assistant",
+          content: formMessage,
+          type: "form",
+        });
+        
         // Update session to indicate form should be shown
         await storage.updateChatSession(session.id, {
           metadata: { formTriggered: true } as any,
@@ -67,7 +111,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json({
           type: "form",
           sessionId: session.id,
-          message: "To help me provide the best recommendation, I need to gather a little more information. Please fill out the brief form below.",
+          message: formMessage,
         });
         return;
       }
