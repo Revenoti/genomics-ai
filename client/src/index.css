@@ -291,4 +291,20 @@
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
   }
+
+  /* Subtle border pulse animation for floating questions */
+  @keyframes pulse-border {
+    0%, 100% {
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.2), 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .animate-pulse-border {
+    animation: pulse-border 3s ease-in-out infinite;
+  }
 }

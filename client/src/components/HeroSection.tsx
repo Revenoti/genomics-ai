@@ -38,7 +38,7 @@ export default function HeroSection() {
                    backdrop-blur-sm w-full sm:w-auto max-w-md sm:max-w-none"
         data-testid="button-start-consultation"
       >
-        <span className="block sm:hidden">Start Your Consultation</span>
+        <span className="block sm:hidden">Start A Free Genomic Consultation</span>
         <span className="hidden sm:block">Start Consultation with Functional Genomics AI</span>
       </Button>
     </div>
