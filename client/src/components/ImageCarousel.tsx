@@ -45,7 +45,7 @@ export default function ImageCarousel() {
       onTouchEnd={handleTouchEnd}
       data-testid="carousel-container"
     >
-      <div className="relative aspect-[3/4] max-h-[35vh] md:max-h-[60vh] mx-auto overflow-hidden rounded-lg shadow-2xl">
+      <div className="relative aspect-[3/4] max-h-[52vh] md:max-h-[60vh] mx-auto overflow-hidden rounded-lg shadow-2xl">
         {SERVICE_CARDS.map((service, index) => (
           <div
             key={service.id}

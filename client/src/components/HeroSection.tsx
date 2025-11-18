@@ -32,7 +32,7 @@ export default function HeroSection() {
       <Button
         onClick={() => setLocation('/chat')}
         size="lg"
-        className="mt-3 sm:mt-8 px-6 py-4 sm:px-8 sm:py-6 md:px-12 md:py-7 text-sm sm:text-lg md:text-xl font-semibold
+        className="mt-6 sm:mt-8 px-6 py-4 sm:px-8 sm:py-6 md:px-12 md:py-7 text-sm sm:text-lg md:text-xl font-semibold
                    bg-primary hover:bg-primary/90 text-primary-foreground
                    shadow-lg hover:shadow-xl transition-all duration-300
                    backdrop-blur-sm w-full sm:w-auto max-w-md sm:max-w-none"
