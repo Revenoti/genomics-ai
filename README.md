@@ -29,7 +29,7 @@ A sophisticated AI-powered chat interface that serves as an intelligent consulta
 - **🎯 Smart Recommendations**: AI assistant provides personalized service recommendations with direct links to clinic scheduling
 - **📱 Mobile Optimized**: Fully responsive design with 44px touch targets, optimized message input, and clean two-line footer address
 - **📍 Professional Footer**: Clinic address and copyright information displayed on all pages with mobile-optimized formatting
-- **🌐 SEO & Social Sharing**: Comprehensive Open Graph and Twitter Card meta tags for optimal social media presence
+- **🌐 SEO & Social Sharing**: Custom 1200x630px branded social media card with comprehensive Open Graph and Twitter Card meta tags for beautiful previews on Facebook, LinkedIn, Twitter, and WhatsApp
 
 ## Technology Stack
 
@@ -239,7 +239,9 @@ This application can also be deployed directly on Replit:
 ```
 ├── client/                    # Frontend application
 │   ├── public/               # Static assets
-│   │   └── logo2_1763479558697.png
+│   │   ├── logo2_1763479558697.png
+│   │   └── social/          # Social media cards
+│   │       └── og-card.png  # Open Graph card (1200x630px)
 │   ├── src/
 │   │   ├── components/       # React components
 │   │   │   ├── chat/        # Chat-specific components
@@ -536,7 +538,13 @@ This project is proprietary software. Unauthorized copying, modification, distri
 
 **Deployment & Social Sharing**
 - Updated custom domain from genomic-ai.com to **genomic-ai.io** across all meta tags
-- Configured Open Graph and Twitter Card meta tags for beautiful social media previews
+- **Created custom 1200x630px branded Open Graph card** for social media sharing
+  - Professional blue-cyan gradient background matching app design
+  - DNA helix branding with clinic name and tagline
+  - Optimized for Facebook, LinkedIn, Twitter, and WhatsApp previews
+  - Stored at `client/public/social/og-card.png`
+- Configured comprehensive Open Graph and Twitter Card meta tags
+- Added `og:image:type` and `og:image:secure_url` for enhanced compatibility
 - Created `netlify.toml` with serverless functions, redirects, and security headers
 - Added Netlify serverless function wrapper in `netlify/functions/index.ts`
 - Comprehensive Netlify deployment documentation in README

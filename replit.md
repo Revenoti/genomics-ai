@@ -42,9 +42,13 @@ Preferred communication style: Simple, everyday language.
 
 **SEO & Social Sharing**:
 - Custom domain: genomic-ai.io
+- Custom 1200x630px branded Open Graph card (`client/public/social/og-card.png`)
+  - Professional blue-cyan gradient background matching app design
+  - DNA helix branding with clinic name and tagline
+  - Optimized for Facebook, LinkedIn, Twitter, and WhatsApp
 - Open Graph meta tags with CRO-optimized marketing copy
 - Twitter Card integration for enhanced social media previews
-- og:image configured with clinic logo for rich preview cards on Facebook, LinkedIn, Twitter, WhatsApp
+- Additional meta tags: og:image:type, og:image:secure_url for enhanced compatibility
 
 **Asset Handling**:
 - All static assets (images, logos) imported using Vite's `@assets` alias
