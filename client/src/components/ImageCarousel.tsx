@@ -33,14 +33,19 @@ export default function ImageCarousel() {
     }
   }, [isPaused]);
 
+  const handleTouchStart = () => setIsPaused(true);
+  const handleTouchEnd = () => setIsPaused(false);
+
   return (
     <div
-      className="relative w-full max-w-3xl mx-auto mt-12 mb-8"
+      className="relative w-full max-w-3xl mx-auto mt-8 md:mt-12 mb-6 md:mb-8"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       data-testid="carousel-container"
     >
-      <div className="relative aspect-[3/4] max-h-[60vh] mx-auto overflow-hidden rounded-lg shadow-2xl">
+      <div className="relative aspect-[3/4] max-h-[50vh] md:max-h-[60vh] mx-auto overflow-hidden rounded-lg shadow-2xl">
         {SERVICE_CARDS.map((service, index) => (
           <div
             key={service.id}
@@ -59,19 +64,22 @@ export default function ImageCarousel() {
       </div>
 
       {/* Navigation Dots */}
-      <div className="flex justify-center gap-2 mt-6">
+      <div className="flex justify-center gap-3 mt-4 md:mt-6">
         {SERVICE_CARDS.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
             data-testid={`carousel-dot-${index}`}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+            className={`relative rounded-full transition-all duration-300 ${
               index === currentIndex
-                ? 'bg-primary w-8'
-                : 'bg-white/40 hover:bg-white/60'
+                ? 'bg-primary w-10 h-2.5'
+                : 'bg-white/40 hover:bg-white/60 w-2.5 h-2.5'
             }`}
+            style={{ minWidth: '44px', minHeight: '44px', padding: '20px 16px' }}
             aria-label={`Go to slide ${index + 1}`}
-          />
+          >
+            <span className="sr-only">Slide {index + 1}</span>
+          </button>
         ))}
       </div>
     </div>

@@ -11,13 +11,13 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 
   return (
     <div
-      className={`flex gap-3 ${isUser ? 'flex-row-reverse ml-auto' : 'mr-auto'} max-w-[80%] md:max-w-[70%]`}
+      className={`flex gap-2 sm:gap-3 ${isUser ? 'flex-row-reverse ml-auto' : 'mr-auto'} max-w-[85%] sm:max-w-[80%] md:max-w-[70%]`}
       data-testid={`message-${message.role}`}
     >
       {/* Avatar */}
       {!isUser && (
-        <Avatar className="w-10 h-10 flex-shrink-0">
-          <AvatarFallback className="bg-primary text-primary-foreground text-sm font-semibold">
+        <Avatar className="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0">
+          <AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm font-semibold">
             FG
           </AvatarFallback>
         </Avatar>
@@ -25,7 +25,7 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
 
       {/* Message Content */}
       <div
-        className={`px-4 py-3 rounded-2xl ${
+        className={`px-3 py-2 sm:px-4 sm:py-3 rounded-2xl ${
           isUser
             ? 'bg-primary text-primary-foreground rounded-tr-sm'
             : 'bg-card text-card-foreground rounded-tl-sm border border-card-border'

@@ -28,15 +28,15 @@ export default function MessageInput({ onSend, disabled }: MessageInputProps) {
 
   return (
     <div className="border-t border-border bg-background">
-      <div className="max-w-4xl mx-auto px-4 py-4">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
         <form onSubmit={handleSubmit} className="relative">
           <Textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type your message here..."
-            className="pr-14 resize-none rounded-xl"
-            rows={3}
+            className="pr-12 sm:pr-14 resize-none rounded-xl text-sm sm:text-base"
+            rows={2}
             disabled={disabled}
             data-testid="textarea-message-input"
           />

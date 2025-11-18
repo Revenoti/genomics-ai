@@ -100,7 +100,8 @@ export default function IntriguingQuestions() {
       className="fixed z-10 max-w-xs md:max-w-md text-white text-sm md:text-base font-medium 
                  cursor-pointer hover-elevate active-elevate-2 rounded-lg px-4 py-3
                  bg-black/20 backdrop-blur-sm border border-white/20
-                 transition-all duration-1000 will-change-[opacity,transform]"
+                 transition-all duration-1000 will-change-[opacity,transform]
+                 hidden sm:block"
       style={{
         ...currentPosition,
         opacity: isVisible ? 1 : 0,

@@ -6,10 +6,10 @@ export default function HeroSection() {
   const [, setLocation] = useLocation();
 
   return (
-    <div className="relative z-20 max-w-5xl mx-auto px-6 py-12 md:px-12 md:py-20 text-center">
+    <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 md:px-12 md:py-20 text-center">
       {/* Title */}
       <h1 
-        className="font-serif text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight"
+        className="font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight"
         data-testid="hero-title"
       >
         A New Paradigm in Personalized Health.{' '}
@@ -18,7 +18,7 @@ export default function HeroSection() {
 
       {/* Subtitle */}
       <p 
-        className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto mb-8 leading-relaxed"
+        className="text-base sm:text-lg md:text-xl text-white/90 max-w-3xl mx-auto mb-6 sm:mb-8 leading-relaxed"
         data-testid="hero-subtitle"
       >
         Chat with our Functional Genomics AI to understand how precision medicine 
@@ -32,13 +32,14 @@ export default function HeroSection() {
       <Button
         onClick={() => setLocation('/chat')}
         size="lg"
-        className="mt-12 px-8 py-6 md:px-12 md:py-7 text-lg md:text-xl font-semibold
+        className="mt-8 sm:mt-12 px-6 py-5 sm:px-8 sm:py-6 md:px-12 md:py-7 text-base sm:text-lg md:text-xl font-semibold
                    bg-primary hover:bg-primary/90 text-primary-foreground
                    shadow-lg hover:shadow-xl transition-all duration-300
-                   backdrop-blur-sm"
+                   backdrop-blur-sm w-full sm:w-auto max-w-md sm:max-w-none"
         data-testid="button-start-consultation"
       >
-        Start Consultation with Functional Genomics AI
+        <span className="block sm:hidden">Start Your Consultation</span>
+        <span className="hidden sm:block">Start Consultation with Functional Genomics AI</span>
       </Button>
     </div>
   );

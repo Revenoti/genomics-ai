@@ -59,18 +59,18 @@ export default function DynamicFormMessage({ onSubmit, message }: DynamicFormMes
   };
 
   return (
-    <div className="flex gap-3 mr-auto max-w-[95%]" data-testid="form-message">
-      <Avatar className="w-10 h-10 flex-shrink-0">
-        <AvatarFallback className="bg-primary text-primary-foreground text-sm font-semibold">
+    <div className="flex gap-2 sm:gap-3 mr-auto max-w-[95%]" data-testid="form-message">
+      <Avatar className="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0">
+        <AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm font-semibold">
           FG
         </AvatarFallback>
       </Avatar>
 
-      <div className="flex-1 px-6 py-5 rounded-2xl rounded-tl-sm bg-card text-card-foreground border border-card-border">
-        <p className="text-base leading-relaxed mb-6">{message}</p>
+      <div className="flex-1 px-3 py-3 sm:px-6 sm:py-5 rounded-2xl rounded-tl-sm bg-card text-card-foreground border border-card-border">
+        <p className="text-sm sm:text-base leading-relaxed mb-4 sm:mb-6">{message}</p>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit, handleInvalidSubmit)} className="space-y-5">
+          <form onSubmit={form.handleSubmit(handleSubmit, handleInvalidSubmit)} className="space-y-3 sm:space-y-5">
             <FormField
               control={form.control}
               name="fullName"
