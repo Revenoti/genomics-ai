@@ -76,12 +76,13 @@ Preferred communication style: Simple, everyday language.
 - Includes schema probing on boot to verify database availability
 
 **Session Management**:
-- **DATABASE PERSISTENCE**: Full PostgreSQL implementation using Supabase with Drizzle ORM
+- **DATABASE PERSISTENCE** (when DATABASE_URL is set): Full PostgreSQL implementation using Supabase with Drizzle ORM
+- **FALLBACK MODE** (without DATABASE_URL): In-memory storage (MemStorage) - data lost on server restart
 - SessionId stored in browser localStorage (`genomic-ai-session-id`) for cross-refresh persistence
-- Automatic session restoration on page load with complete message history
+- Automatic session restoration on page load with complete message history (if database is configured)
 - Session tracking includes turn count for determining when to trigger lead qualification forms
-- Form visibility state restored after page refresh (form messages persisted as type: "form")
-- All conversations, form submissions, and user data persisted to database for analytics
+- Form visibility state restored after page refresh via localStorage
+- All conversations, form submissions, and user data persisted to database for analytics (when configured)
 
 **Form Triggering Logic**:
 - Dynamic form appears after 3-5 conversation turns or when user expresses strong interest
@@ -95,9 +96,10 @@ Preferred communication style: Simple, everyday language.
 - `messages` - Stores all chat messages with role, content, type, and timestamps
 - `leads` - Captures form submissions with user contact info and qualification details
 
-**Current Implementation**: DatabaseStorage with Supabase PostgreSQL (production-ready)
+**Current Implementation**: Automatic selection between DatabaseStorage (when DATABASE_URL is set) and MemStorage (fallback)
 **Database Driver**: neon-serverless with WebSocket support for full PostgreSQL compatibility
-**Performance Optimization**: Index on `messages.session_id` for efficient history queries
+**Performance Optimization**: Index on `messages.session_id` for efficient history queries when using database
+**Note**: For production deployments, DATABASE_URL must be set to enable persistence across server restarts
 
 **Storage Interface Pattern**: IStorage interface allows easy swapping between in-memory and database implementations without changing business logic
 

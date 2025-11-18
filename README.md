@@ -22,6 +22,8 @@ A sophisticated AI-powered chat interface that serves as an intelligent consulta
 - **🎨 Engaging Landing Page**: Animated service carousel with 6 rotating images (4-second auto-rotate, pause-on-hover) and floating intriguing questions with fade animations
 - **🤖 AI-Powered Consultation**: ChatGPT-style interface with streaming responses powered by OpenAI GPT-5
 - **📚 RAG Knowledge Base**: Supabase vector database integration for contextual responses about clinic services, research, and the Posey Protocol
+- **💾 Database Persistence**: PostgreSQL support with automatic session restoration across page refreshes and server restarts
+- **🔄 Session Memory**: Conversation history persists via localStorage (within browser session) and optionally to database (across server restarts)
 - **📋 Dynamic Lead Qualification**: Intelligent form triggering after 2-4 conversation exchanges to capture patient information
 - **🎯 Smart Recommendations**: AI assistant provides personalized service recommendations with direct links to clinic scheduling
 - **📱 Mobile Optimized**: Fully responsive design with 44px touch targets and optimized layouts
@@ -42,8 +44,9 @@ A sophisticated AI-powered chat interface that serves as an intelligent consulta
 - **Express.js** with TypeScript
 - **OpenAI SDK** for GPT-5 integration
 - **Supabase** for RAG vector database
-- **Drizzle ORM** for type-safe database operations
-- **Session Management** with in-memory storage (production-ready for PostgreSQL)
+- **PostgreSQL** with Drizzle ORM for persistent data storage
+- **neon-serverless** database driver with WebSocket support
+- **Session Management** with localStorage and database persistence
 
 ### Development Tools
 - **TypeScript** for type safety
@@ -58,9 +61,9 @@ A sophisticated AI-powered chat interface that serves as an intelligent consulta
 - **npm** or **yarn**
 - **OpenAI API Key** (GPT-5 access)
 
-### Optional
+### Recommended (for production)
+- **PostgreSQL Database** (Supabase or any PostgreSQL provider) - Enables persistent session storage and conversation history across server restarts. Falls back to in-memory storage if not configured.
 - **Supabase Account** with vector database setup (for enhanced RAG; uses fallback context if not configured)
-- **PostgreSQL** (for production database persistence; uses in-memory storage by default)
 
 ## Environment Setup
 
@@ -77,8 +80,11 @@ SUPABASE_ANON_KEY=your_supabase_anon_key
 # Session Secret (Optional)
 SESSION_SECRET=your_secure_session_secret_here
 
-# Database (Optional - for production persistence)
+# Database (Recommended - for persistent storage across server restarts)
+# Omit to use in-memory storage (data lost on restart)
 DATABASE_URL=postgresql://user:password@host:port/database
+# Example Supabase format:
+# DATABASE_URL=postgresql://postgres.[project-ref]:[password]@aws-0-us-west-1.pooler.supabase.com:5432/postgres
 ```
 
 ### Supabase Setup (Optional)
@@ -100,6 +106,30 @@ CREATE INDEX ON documents USING ivfflat (embedding vector_cosine_ops);
 ```
 
 The application probes the Supabase schema on boot and gracefully handles missing tables or configuration.
+
+### Database Setup (Recommended for Production)
+
+The application supports PostgreSQL (via Supabase or any PostgreSQL provider) for persistent storage of conversations, sessions, and lead data. **If DATABASE_URL is not provided, the application automatically falls back to in-memory storage** (data is lost on server restart).
+
+**Database Schema:**
+- `chat_sessions` - Tracks conversation sessions with turn counts and form submission status
+- `messages` - Stores all chat messages with role, content, type, and timestamps (indexed on session_id)
+- `leads` - Captures lead qualification form submissions
+
+**Initialize the database:**
+
+```bash
+# Push schema to your PostgreSQL database
+npm run db:push
+```
+
+This creates the necessary tables and indexes in your database. The application automatically:
+- Creates new sessions with unique UUIDs
+- Saves all messages to the database
+- Restores conversation history on page refresh via localStorage sessionId
+- Persists form state to prevent data loss on refresh
+
+**Note**: If you modify the database schema in `shared/schema.ts`, run `npm run db:push` again to sync the changes to your database.
 
 ## Installation
 
@@ -156,8 +186,11 @@ The application probes the Supabase schema on boot and gracefully handles missin
 │
 ├── server/                   # Backend application
 │   ├── routes.ts            # API endpoints
-│   ├── storage.ts           # Storage interface (in-memory/database)
+│   ├── storage.ts           # Storage interface (DatabaseStorage/MemStorage)
+│   ├── db.ts                # Database connection (neon-serverless)
 │   ├── supabase.ts          # Supabase RAG integration
+│   ├── openai.ts            # OpenAI client configuration
+│   ├── system-prompt.ts     # AI system prompt and form logic
 │   ├── index.ts             # Express server setup
 │   └── vite.ts              # Vite SSR configuration
 │
@@ -203,6 +236,28 @@ Main chat endpoint with streaming support.
   }
   ```
 
+### `GET /api/sessions/:sessionId/messages`
+
+Fetch message history for a session (used for conversation restoration).
+
+**Response:**
+```json
+{
+  "sessionId": "uuid-string",
+  "turnCount": 3,
+  "formSubmitted": false,
+  "messages": [
+    {
+      "id": "message-uuid",
+      "role": "user",
+      "content": "Message content",
+      "type": "message",
+      "timestamp": "2025-11-18T16:00:00Z"
+    }
+  ]
+}
+```
+
 ### `POST /api/leads`
 
 Submit lead qualification form.
@@ -211,11 +266,11 @@ Submit lead qualification form.
 ```json
 {
   "sessionId": "uuid-string",
-  "name": "Patient Name",
+  "fullName": "Patient Name",
   "email": "patient@example.com",
-  "consultationTarget": "For myself",
-  "primaryConcern": "Health concern description",
-  "previousTreatments": "Treatment history"
+  "consultationFor": "myself",
+  "primaryHealthConcern": "Health concern description",
+  "triedOtherTreatments": "yes"
 }
 ```
 
@@ -239,9 +294,26 @@ Submit lead qualification form.
 ### Chat Interface
 - **Real-time Streaming**: Token-by-token response streaming for natural conversation flow
 - **Context Awareness**: RAG system retrieves relevant clinic information from Supabase
-- **Session Management**: Persistent conversation tracking with turn counting
-- **Form Integration**: Dynamic form appears after 3-5 exchanges or strong interest signals
+- **Database Persistence**: Messages and sessions optionally stored in PostgreSQL (when DATABASE_URL is set)
+- **Session Restoration**: Conversation history automatically restored on page refresh via localStorage and database
+- **Form State Persistence**: Lead qualification form visibility preserved across page refreshes (localStorage)
+- **Turn Tracking**: Intelligent turn counting for form triggering (3-5 exchanges)
+- **Form Integration**: Dynamic form appears after conversation engagement or strong interest signals
 - **Mobile Optimized**: Compact layout with 32px avatars and 2-row message input
+
+**Session Flow (with DATABASE_URL configured):**
+1. User starts chat → Server creates session with UUID
+2. SessionId saved to browser localStorage (`genomic-ai-session-id`)
+3. All messages persist to PostgreSQL database
+4. On page refresh → SessionId loaded from localStorage
+5. Message history fetched from `/api/sessions/:sessionId/messages`
+6. Full conversation restored seamlessly
+
+**Session Flow (without DATABASE_URL - in-memory mode):**
+1. User starts chat → Server creates session in memory
+2. SessionId saved to browser localStorage
+3. Messages stored in memory (lost on server restart)
+4. On page refresh → Conversation lost if server restarted
 
 ### AI System Prompt
 The assistant operates with a dual role:
@@ -284,8 +356,9 @@ For production deployment:
 
 4. **Environment Variables**
    - Ensure all environment variables are set on your hosting platform
-   - Use PostgreSQL for production database
+   - **DATABASE_URL is strongly recommended** - Without it, data is lost on server restarts
    - Configure Supabase connection pooling for scale
+   - Monitor database connection health (pool limits, error logging)
 
 ### Recommended Hosting Platforms
 - **Replit** (current setup)
