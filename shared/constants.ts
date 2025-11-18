@@ -47,13 +47,14 @@ export const SERVICE_CARDS: ServiceCard[] = [
 ];
 
 // Question positions for the floating questions layer
+// Positions adjusted to avoid logo overlap on mobile (logo is top-4 left-6)
 export const QUESTION_POSITIONS = [
-  { top: '15%', left: '8%' },
-  { top: '25%', right: '12%' },
-  { top: '45%', left: '10%' },
-  { top: '60%', right: '15%' },
-  { top: '75%', left: '12%' },
-  { top: '35%', right: '8%' }
+  { top: '20%', right: '8%' },    // Moved to right side to avoid logo
+  { top: '30%', right: '12%' },
+  { top: '50%', left: '10%' },    // Lower position, safer from logo
+  { top: '65%', right: '15%' },
+  { top: '80%', left: '12%' },    // Much lower, well below logo
+  { top: '40%', right: '8%' }
 ];
 
 // Timing constants for animations (in milliseconds)

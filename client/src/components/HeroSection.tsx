@@ -26,9 +26,7 @@ export default function HeroSection() {
       </p>
 
       {/* Image Carousel */}
-      <div className="max-h-[40vh] sm:max-h-none">
-        <ImageCarousel />
-      </div>
+      <ImageCarousel />
 
       {/* CTA Button */}
       <Button

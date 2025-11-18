@@ -38,14 +38,14 @@ export default function ImageCarousel() {
 
   return (
     <div
-      className="relative w-full max-w-3xl mx-auto mt-8 md:mt-12 mb-6 md:mb-8"
+      className="relative w-full max-w-3xl mx-auto mt-3 md:mt-12 mb-0 md:mb-8"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       data-testid="carousel-container"
     >
-      <div className="relative aspect-[3/4] max-h-[50vh] md:max-h-[60vh] mx-auto overflow-hidden rounded-lg shadow-2xl">
+      <div className="relative aspect-[3/4] max-h-[35vh] md:max-h-[60vh] mx-auto overflow-hidden rounded-lg shadow-2xl">
         {SERVICE_CARDS.map((service, index) => (
           <div
             key={service.id}
