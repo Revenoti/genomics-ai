@@ -6,10 +6,10 @@ export default function HeroSection() {
   const [, setLocation] = useLocation();
 
   return (
-    <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 pt-20 sm:pt-24 md:pt-28 md:px-12 pb-6 sm:pb-8 text-center">
+    <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 md:pt-28 md:px-12 pb-4 sm:pb-8 text-center">
       {/* Title */}
       <h1 
-        className="font-serif text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 leading-tight"
+        className="font-serif text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-4 leading-tight"
         data-testid="hero-title"
       >
         A New Paradigm in Personalized Health.{' '}
@@ -18,7 +18,7 @@ export default function HeroSection() {
 
       {/* Subtitle */}
       <p 
-        className="text-sm sm:text-base md:text-lg text-white/90 max-w-3xl mx-auto mb-4 sm:mb-6 leading-relaxed"
+        className="text-xs sm:text-base md:text-lg text-white/90 max-w-3xl mx-auto mb-3 sm:mb-6 leading-snug"
         data-testid="hero-subtitle"
       >
         Chat with our Functional Genomics AI to understand how precision medicine 
@@ -26,13 +26,15 @@ export default function HeroSection() {
       </p>
 
       {/* Image Carousel */}
-      <ImageCarousel />
+      <div className="max-h-[40vh] sm:max-h-none">
+        <ImageCarousel />
+      </div>
 
       {/* CTA Button */}
       <Button
         onClick={() => setLocation('/chat')}
         size="lg"
-        className="mt-6 sm:mt-8 px-6 py-5 sm:px-8 sm:py-6 md:px-12 md:py-7 text-base sm:text-lg md:text-xl font-semibold
+        className="mt-3 sm:mt-8 px-6 py-4 sm:px-8 sm:py-6 md:px-12 md:py-7 text-sm sm:text-lg md:text-xl font-semibold
                    bg-primary hover:bg-primary/90 text-primary-foreground
                    shadow-lg hover:shadow-xl transition-all duration-300
                    backdrop-blur-sm w-full sm:w-auto max-w-md sm:max-w-none"
