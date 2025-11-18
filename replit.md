@@ -39,6 +39,7 @@ Preferred communication style: Simple, everyday language.
 - Chat header: Logo integrated into sticky header, clickable to return to home page
 - Responsive sizing: 48px mobile / 64px desktop (landing), 40px mobile / 48px desktop (chat)
 - Logo publicly accessible at `/logo2_1763479558697.png` for Open Graph social sharing
+- Favicon: Uses clinic logo for browser tab branding
 
 **SEO & Social Sharing**:
 - Custom domain: genomic-ai.io
@@ -72,6 +73,10 @@ Preferred communication style: Simple, everyday language.
 - OpenAI GPT-5 integration via official SDK
 - Streaming responses for improved UX during AI generation
 - System prompt defines dual role: 50% medical consultant, 50% sales advisor
+- **Clinic Information**: AI assistant is aware of:
+  - Physical Address: 1217 Sovereign Row, Suite 107, Oklahoma City, OK 73108
+  - Scheduling URL: https://functionalgenomicmedicine.com/calendar
+  - AI directs all appointment scheduling to the calendar URL
 
 **RAG System**:
 - Supabase integration for knowledge base retrieval
