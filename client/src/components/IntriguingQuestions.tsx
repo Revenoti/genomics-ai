@@ -12,6 +12,8 @@ export default function IntriguingQuestions() {
   const [isMobile, setIsMobile] = useState(() => 
     typeof window !== 'undefined' && window.innerWidth < 640
   );
+
+  console.log('[IntriguingQuestions] Component render:', { currentIndex, isVisible, isMobile });
   
   // Ref-based state for animation loop
   const phaseRef = useRef<AnimationPhase>('fadeIn');
@@ -107,8 +109,12 @@ export default function IntriguingQuestions() {
   const currentQuestion = SERVICE_CARDS[currentIndex];
   const currentPosition = QUESTION_POSITIONS[currentIndex];
 
-  const handleQuestionClick = () => {
-    setLocation('/chat');
+  const handleQuestionClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('[IntriguingQuestions] Click handler fired, navigating to /chat');
+    // Use window.location for more reliable navigation on mobile
+    window.location.href = '/chat';
   };
 
   // Mobile positioning override: fixed header position on mobile
@@ -131,7 +137,7 @@ export default function IntriguingQuestions() {
     <button
       onClick={handleQuestionClick}
       data-testid={`question-${currentIndex}`}
-      className="z-10 max-w-[280px] sm:max-w-xs md:max-w-md text-white text-xs sm:text-sm md:text-base font-medium 
+      className="z-40 max-w-[280px] sm:max-w-xs md:max-w-md text-white text-xs sm:text-sm md:text-base font-medium 
                  cursor-pointer hover-elevate active-elevate-2 rounded-lg px-3 py-2 sm:px-4 sm:py-3
                  bg-black/20 backdrop-blur-sm border border-white/30
                  transition-all duration-1000 will-change-[opacity,transform]
@@ -141,6 +147,7 @@ export default function IntriguingQuestions() {
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? 'translateY(0)' : 'translateY(10px)',
         textShadow: '0 2px 10px rgba(0, 0, 0, 0.5)',
+        pointerEvents: 'auto',  // Ensure button receives click events
       }}
     >
       {currentQuestion.question}
