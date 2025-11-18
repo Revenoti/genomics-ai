@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a web application that serves as an AI-powered consultation interface for Functional Genomic Medicine clinic. The application features a landing page with an engaging visual carousel and floating questions that transition users into a conversational AI chat interface. The AI assistant acts as both a medical consultant and sales advisor, helping potential patients understand precision medicine services while qualifying leads through dynamic forms.
+This is a web application that serves as an AI-powered consultation interface for Functional Genomic Medicine clinic. The project is source-controlled on GitHub with comprehensive documentation in README.md. The application features a landing page with an engaging visual carousel and floating questions that transition users into a conversational AI chat interface. The AI assistant acts as both a medical consultant and sales advisor, helping potential patients understand precision medicine services while qualifying leads through dynamic forms.
 
 The application uses a modern React-based frontend with a Node.js/Express backend, integrating OpenAI's GPT-5 for conversational AI capabilities and Supabase for RAG (Retrieval-Augmented Generation) to provide knowledge-based responses about the clinic's services.
 
