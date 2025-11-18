@@ -25,11 +25,11 @@ export default function Landing() {
       />
 
       {/* Logo in Top Left */}
-      <div className="absolute top-4 left-6 md:top-8 md:left-12 z-10">
+      <div className="absolute top-4 left-6 md:top-8 md:left-12 z-30">
         <img 
           src={logoUrl} 
           alt="Functional Genomic Medicine Logo" 
-          className="h-15 w-15 md:h-20 md:w-20"
+          className="h-[60px] w-[60px] md:h-[72px] md:w-[72px]"
           data-testid="img-logo"
         />
       </div>
