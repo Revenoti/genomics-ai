@@ -1,6 +1,8 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import type { ChatMessage } from '@shared/schema';
+import logoUrl from '@assets/logo2_1763479558697.png';
 
 interface MessageBubbleProps {
   message: ChatMessage;
@@ -15,13 +17,20 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
       data-testid={`message-${message.role}`}
     >
       {/* Avatar */}
-      {!isUser && (
-        <Avatar className="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0">
-          <AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm font-semibold">
-            FG
+      <Avatar className="w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0">
+        {isUser ? (
+          <AvatarFallback className="bg-muted text-muted-foreground">
+            <User className="w-4 h-4 sm:w-5 sm:h-5" />
           </AvatarFallback>
-        </Avatar>
-      )}
+        ) : (
+          <>
+            <AvatarImage src={logoUrl} alt="Functional Genomics AI" />
+            <AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm font-semibold">
+              FG
+            </AvatarFallback>
+          </>
+        )}
+      </Avatar>
 
       {/* Message Content */}
       <div
