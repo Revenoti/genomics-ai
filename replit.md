@@ -71,12 +71,23 @@ Preferred communication style: Simple, everyday language.
 
 **AI Integration**:
 - OpenAI GPT-5 integration via official SDK
-- Streaming responses for improved UX during AI generation
+- **Dual-Mode Response System** for reliability across environments:
+  - **Streaming Mode** (Local Development): Real-time SSE (Server-Sent Events) for typewriter effect
+  - **Non-Streaming Mode** (Netlify Serverless): Complete JSON responses to avoid serverless timeout issues
+  - Automatic environment detection via `AWS_LAMBDA_FUNCTION_NAME` and `NETLIFY` env vars
+  - Frontend automatically handles both response types for seamless cross-environment compatibility
 - System prompt defines dual role: 50% medical consultant, 50% sales advisor
 - **Clinic Information**: AI assistant is aware of:
   - Physical Address: 1217 Sovereign Row, Suite 107, Oklahoma City, OK 73108
   - Scheduling URL: https://functionalgenomicmedicine.com/calendar
   - AI directs all appointment scheduling to the calendar URL
+- **Reliability Features**:
+  - 30-second connection timeout (allows OpenAI time to start responding)
+  - Timeout cleared after headers received (allows indefinite streaming)
+  - Exponential backoff retry strategy (max 2 retries: 1s, 2s delays)
+  - Proper SSE chunk buffering to handle split events across network boundaries
+  - Enhanced loading indicator: "AI is analyzing your question..." with spinner
+  - Graceful error messages for timeout/network failures
 
 **RAG System**:
 - Supabase integration for knowledge base retrieval
@@ -161,6 +172,12 @@ Future consideration: May add authentication for returning users to access conve
 - Serverless function wrapper in `netlify/functions/index.ts`
 - Environment variables managed via Netlify UI
 - Automatic SSL certificate provisioning
+- **Serverless Optimizations**:
+  - Lazy initialization pattern to avoid top-level await in serverless functions
+  - Non-streaming response mode for reliable completion within Netlify's 10-second free tier timeout
+  - esbuild bundler with automatic tree-shaking for minimal function size (~5-15 MB)
+  - Frontend timeout protection (25s) with exponential backoff retry (max 2 retries)
+  - Enhanced error handling and user feedback for timeout scenarios
 
 **Alternative Deployment**: 
 - Can be deployed on Replit with built-in deployment features

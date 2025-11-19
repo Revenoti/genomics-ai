@@ -20,6 +20,74 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
+// Simple retry logic for connection failures only
+// Does NOT apply timeout to SSE streaming - only to initial connection
+const fetchWithRetry = async (
+  url: string,
+  options: RequestInit,
+  maxRetries = 2
+): Promise<Response> => {
+  let lastError: Error | null = null;
+  let lastResponse: Response | null = null;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`[FETCH] Attempt ${attempt + 1}/${maxRetries + 1}`);
+      
+      // Race between fetch and timeout - no AbortController attached to response
+      // This prevents lingering controllers from aborting active SSE streams
+      const response = await Promise.race([
+        fetch(url, options),
+        new Promise<Response>((_, reject) => 
+          setTimeout(() => reject(new Error('Connection timeout')), 30000)
+        )
+      ]);
+      
+      // If successful, return immediately
+      if (response.ok) {
+        console.log(`[FETCH] Success on attempt ${attempt + 1}`);
+        return response;
+      }
+      
+      // If not successful, store for potential retry
+      lastResponse = response;
+      
+      // If this is the last attempt, return the failed response
+      if (attempt === maxRetries) {
+        console.log(`[FETCH] Max retries reached, returning response with status ${response.status}`);
+        return response;
+      }
+      
+      // Wait before retrying (exponential backoff: 1s, 2s)
+      const waitTime = Math.pow(2, attempt) * 1000;
+      console.log(`[FETCH] Request failed with status ${response.status}, retrying in ${waitTime}ms...`);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+      
+    } catch (error: any) {
+      lastError = error;
+      
+      // If it's the last attempt, throw the error
+      if (attempt === maxRetries) {
+        if (error.message === 'Connection timeout') {
+          throw new Error('Request timed out. The AI is taking longer than expected. Please try again.');
+        }
+        throw error;
+      }
+      
+      // Wait before retrying (exponential backoff: 1s, 2s)
+      const waitTime = Math.pow(2, attempt) * 1000;
+      console.log(`[FETCH] Error: ${error.message}, retrying in ${waitTime}ms...`);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+    }
+  }
+  
+  // Should never reach here, but just in case
+  if (lastResponse) {
+    return lastResponse;
+  }
+  throw lastError || new Error('Request failed after retries');
+};
+
 export default function Chat() {
   const { state, dispatch } = useChat();
   const { toast } = useToast();
@@ -100,17 +168,19 @@ export default function Chat() {
       };
       console.log('[FRONTEND] Request body sessionId:', requestBody.sessionId);
       
-      const response = await fetch('/api/chat', {
+      // Make initial request with retry logic for connection failures
+      // Timeout only applies to initial connection, not to SSE streaming body
+      const response = await fetchWithRetry('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
-      });
+      }, 2); // 2 retries with 15s connection timeout
 
       if (!response.ok) {
         throw new Error('Failed to get response');
       }
 
-      // Check if it's a form trigger
+      // Check response type - handles both JSON and streaming
       const contentType = response.headers.get('content-type');
       console.log('[FRONTEND] Response content-type:', contentType);
       
@@ -118,6 +188,7 @@ export default function Chat() {
         const data = await response.json();
         console.log('[FRONTEND] JSON response data:', data);
         
+        // Handle form trigger
         if (data.type === 'form') {
           console.log('[FRONTEND] Form trigger received! Setting sessionId:', data.sessionId);
           localStorage.setItem('genomic-ai-session-id', data.sessionId);
@@ -126,14 +197,39 @@ export default function Chat() {
           dispatch({ type: 'SET_STREAMING', payload: false });
           return;
         }
+        
+        // Handle complete message response (non-streaming mode for Netlify)
+        if (data.type === 'message') {
+          console.log('[FRONTEND] Complete message received (non-streaming mode)');
+          
+          // Save sessionId if new
+          if (data.sessionId && (state.sessionId === 'pending' || !state.sessionId)) {
+            console.log('[FRONTEND] Saving sessionId from response:', data.sessionId);
+            localStorage.setItem('genomic-ai-session-id', data.sessionId);
+            dispatch({ type: 'SET_SESSION_ID', payload: data.sessionId });
+          }
+          
+          // Add complete assistant message
+          const assistantMessage = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant' as const,
+            content: data.content,
+            timestamp: new Date(),
+          };
+          dispatch({ type: 'ADD_MESSAGE', payload: assistantMessage });
+          dispatch({ type: 'SET_STREAMING', payload: false });
+          return;
+        }
       }
 
-      // Handle streaming response
+      // Handle streaming response (SSE mode for local development)
+      console.log('[FRONTEND] Processing streaming response');
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       
       let accumulatedContent = '';
       let sessionId = state.sessionId;
+      let buffer = ''; // Buffer for incomplete chunks
       
       // Add initial empty assistant message
       const assistantMessage = {
@@ -148,29 +244,41 @@ export default function Chat() {
         const { done, value } = await reader!.read();
         if (done) break;
 
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-
+        // Decode chunk and add to buffer
+        const chunk = decoder.decode(value, { stream: true });
+        buffer += chunk;
+        
+        // Split by newlines - last item might be incomplete
+        const lines = buffer.split('\n');
+        
+        // Keep the last (potentially incomplete) line in the buffer
+        buffer = lines.pop() || '';
+        
+        // Process complete lines only
         for (const line of lines) {
           if (line.startsWith('data: ')) {
-            const data = JSON.parse(line.slice(6));
-            
-            if (data.sessionId) {
-              if (sessionId === 'pending' || !sessionId) {
-                sessionId = data.sessionId;
-                console.log('[FRONTEND] Received sessionId from stream, saving to localStorage:', data.sessionId);
-                localStorage.setItem('genomic-ai-session-id', data.sessionId);
-                dispatch({ type: 'SET_SESSION_ID', payload: data.sessionId });
+            try {
+              const data = JSON.parse(line.slice(6));
+              
+              if (data.sessionId) {
+                if (sessionId === 'pending' || !sessionId) {
+                  sessionId = data.sessionId;
+                  console.log('[FRONTEND] Received sessionId from stream, saving to localStorage:', data.sessionId);
+                  localStorage.setItem('genomic-ai-session-id', data.sessionId);
+                  dispatch({ type: 'SET_SESSION_ID', payload: data.sessionId });
+                }
               }
-            }
-            
-            if (data.content) {
-              accumulatedContent += data.content;
-              dispatch({ type: 'UPDATE_LAST_MESSAGE', payload: data.content });
-            }
-            
-            if (data.done) {
-              dispatch({ type: 'SET_STREAMING', payload: false });
+              
+              if (data.content) {
+                accumulatedContent += data.content;
+                dispatch({ type: 'UPDATE_LAST_MESSAGE', payload: data.content });
+              }
+              
+              if (data.done) {
+                dispatch({ type: 'SET_STREAMING', payload: false });
+              }
+            } catch (error) {
+              console.error('[FRONTEND] Error parsing SSE line:', line, error);
             }
           }
         }
