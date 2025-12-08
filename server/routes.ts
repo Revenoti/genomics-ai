@@ -10,6 +10,20 @@ import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
+  // Health check endpoint for Railway monitoring
+  app.get("/api/health", async (_req, res) => {
+    try {
+      res.status(200).json({
+        status: "healthy",
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || "development",
+      });
+    } catch (error) {
+      res.status(503).json({ status: "unhealthy", error: "Health check failed" });
+    }
+  });
+
   // Get message history for a session
   app.get("/api/sessions/:sessionId/messages", async (req, res) => {
     try {
@@ -116,10 +130,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return;
       }
 
-      // Detect if running in serverless environment (Netlify)
-      const isServerless = !!(process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY);
-      const responseMode = isServerless ? 'non-streaming' : 'streaming';
-      console.log('[CHAT] Response mode:', responseMode, '(serverless:', isServerless, ')');
+      // Always use streaming mode for Railway deployment (no serverless timeout limits)
+      console.log('[CHAT] Using streaming mode');
 
       // Perform RAG search to get relevant context
       const ragResults = await performRAGSearch(message);
@@ -136,89 +148,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add system prompt with RAG context
       const systemMessage = `${SYSTEM_PROMPT}\n\n## Retrieved Knowledge Base Context:\n${contextText || "No specific context retrieved for this query."}`;
 
-      if (isServerless) {
-        // NON-STREAMING MODE (Netlify serverless)
-        // Collect entire response first, then send as JSON
-        console.log('[CHAT] Using non-streaming mode for serverless');
-        
-        const completion = await openai.chat.completions.create({
-          model: CHAT_MODEL,
-          messages: [
-            { role: "system", content: systemMessage },
-            ...conversationHistory,
-            { role: "user", content: message },
-          ],
-          stream: false,
-          max_completion_tokens: 2048,
-        });
+      // STREAMING MODE - Real-time response for better user experience
+      // Set up SSE headers for streaming
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.setHeader('X-Accel-Buffering', 'no');
 
-        const fullResponse = completion.choices[0]?.message?.content || "";
-        console.log('[CHAT] Got complete response, length:', fullResponse.length);
+      // Stream OpenAI response with optimized token limit
+      const stream = await openai.chat.completions.create({
+        model: CHAT_MODEL,
+        messages: [
+          { role: "system", content: systemMessage },
+          ...conversationHistory,
+          { role: "user", content: message },
+        ],
+        stream: true,
+        max_completion_tokens: 1024,
+      });
 
-        // Store assistant message
-        await storage.createMessage({
-          sessionId: session.id,
-          role: "assistant",
-          content: fullResponse,
-          type: "message",
-        });
+      let fullResponse = "";
 
-        // Return complete response as JSON
-        res.json({
-          type: "message",
-          sessionId: session.id,
-          content: fullResponse,
-          done: true,
-        });
-
-      } else {
-        // STREAMING MODE (Local development)
-        console.log('[CHAT] Using streaming mode for local development');
-        
-        // Set up SSE headers for streaming
-        res.setHeader('Content-Type', 'text/event-stream');
-        res.setHeader('Cache-Control', 'no-cache');
-        res.setHeader('Connection', 'keep-alive');
-
-        // Stream OpenAI response
-        const stream = await openai.chat.completions.create({
-          model: CHAT_MODEL,
-          messages: [
-            { role: "system", content: systemMessage },
-            ...conversationHistory,
-            { role: "user", content: message },
-          ],
-          stream: true,
-          max_completion_tokens: 2048,
-        });
-
-        let fullResponse = "";
-
-        for await (const chunk of stream) {
-          const content = chunk.choices[0]?.delta?.content || "";
-          if (content) {
-            fullResponse += content;
-            res.write(`data: ${JSON.stringify({ content, sessionId: session.id })}\n\n`);
-          }
-          
-          // Check if stream is done
-          if (chunk.choices[0]?.finish_reason) {
-            break;
-          }
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content || "";
+        if (content) {
+          fullResponse += content;
+          res.write(`data: ${JSON.stringify({ content, sessionId: session.id })}\n\n`);
         }
-
-        // Store assistant message
-        await storage.createMessage({
-          sessionId: session.id,
-          role: "assistant",
-          content: fullResponse,
-          type: "message",
-        });
-
-        // Send done signal and end stream
-        res.write(`data: ${JSON.stringify({ done: true, sessionId: session.id })}\n\n`);
-        res.end();
+        
+        // Check if stream is done
+        if (chunk.choices[0]?.finish_reason) {
+          break;
+        }
       }
+
+      // Store assistant message
+      await storage.createMessage({
+        sessionId: session.id,
+        role: "assistant",
+        content: fullResponse,
+        type: "message",
+      });
+
+      // Send done signal and end stream
+      res.write(`data: ${JSON.stringify({ done: true, sessionId: session.id })}\n\n`);
+      res.end();
 
     } catch (error) {
       console.error("Chat API error:", error);

@@ -165,20 +165,32 @@ Future consideration: May add authentication for returning users to access conve
 
 ### Deployment
 
-**Current Deployment**: 
-- Custom domain: genomic-ai.io
-- Configured for Netlify deployment with serverless functions
-- `netlify.toml` configuration for build settings, redirects, and security headers
-- Serverless function wrapper in `netlify/functions/index.ts`
-- Environment variables managed via Netlify UI
-- Automatic SSL certificate provisioning
-- **Serverless Optimizations**:
-  - Lazy initialization pattern to avoid top-level await in serverless functions
-  - Non-streaming response mode for reliable completion within Netlify's 10-second free tier timeout
-  - esbuild bundler with automatic tree-shaking for minimal function size (~5-15 MB)
-  - Frontend timeout protection (25s) with exponential backoff retry (max 2 retries)
-  - Enhanced error handling and user feedback for timeout scenarios
+**Primary Deployment (Railway)**: 
+- Optimized for Railway deployment from GitHub
+- Full streaming support for real-time AI responses (no timeout limits)
+- `railway.json` and `nixpacks.toml` configuration files included
+- Health check endpoint at `/api/health` for Railway monitoring
+- Environment variables configured in Railway dashboard
 
-**Alternative Deployment**: 
-- Can be deployed on Replit with built-in deployment features
-- Vercel, Railway, or Render also supported
+**Railway Deployment Steps**:
+1. Push code to GitHub repository
+2. Create new project on Railway (railway.app)
+3. Select "Deploy from GitHub repo"
+4. Configure environment variables in Railway dashboard:
+   - `OPENAI_API_KEY` - OpenAI API key
+   - `DATABASE_URL` - Supabase PostgreSQL connection string
+   - `SUPABASE_URL` - Supabase project URL
+   - `SUPABASE_ANON_KEY` - Supabase anonymous key
+   - `SESSION_SECRET` - Random string for session encryption
+5. Railway automatically builds and deploys on each push
+
+**Performance Optimizations**:
+- Full SSE streaming for real-time AI responses
+- Optimized token limits (1024 max tokens) for faster responses
+- X-Accel-Buffering header disabled for proper streaming through proxies
+- Health check endpoint for Railway monitoring and auto-restart
+
+**Alternative Deployments**: 
+- Replit with built-in deployment features
+- Render or Fly.io also supported
+- Legacy Netlify configuration available in `netlify/` folder (not recommended due to timeout limits)
