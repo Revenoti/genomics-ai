@@ -85,6 +85,7 @@ Preferred communication style: Simple, everyday language.
   - Full streaming support for Railway deployment (no serverless timeout limits)
   - X-Accel-Buffering header disabled for proper streaming through proxies
 - System prompt defines dual role: 50% medical consultant, 50% sales advisor
+- **Guardrails**: AI stays on-topic (clinic services, genomic medicine) and politely redirects off-topic questions
 - **Clinic Information**: AI assistant is aware of:
   - Physical Address: 1217 Sovereign Row, Suite 107, Oklahoma City, OK 73108
   - Scheduling URL: https://functionalgenomicmedicine.com/calendar
