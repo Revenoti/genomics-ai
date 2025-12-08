@@ -1,0 +1,38 @@
+3:19:49 PM [express] GET /api/sessions/187eb7cc-1a41-4018-814d-fd574ba252b7/messages 304 in 236ms ::…
+[CHAT] Incoming request - sessionId: 187eb7cc-1a41-4018-814d-fd574ba252b7 messageLength: 15
+[CHAT] Found existing session: 187eb7cc-1a41-4018-814d-fd574ba252b7 turnCount: 1 formSubmitted: false
+[CHAT] Incrementing turnCount from 1 to 2
+[CHAT] Form trigger check - turnCount: 2 formAlreadySubmitted: false shouldTrigger: false message: what is autism?
+[CHAT] Using streaming mode
+Using fallback RAG context (schema unavailable - cached)
+3:20:21 PM [express] POST /api/chat 200 in 22995ms
+3:28:11 PM [express] GET /api/sessions/187eb7cc-1a41-4018-814d-fd574ba252b7/messages 200 in 250ms ::…
+[CHAT] Incoming request - sessionId: 187eb7cc-1a41-4018-814d-fd574ba252b7 messageLength: 15
+[CHAT] Found existing session: 187eb7cc-1a41-4018-814d-fd574ba252b7 turnCount: 2 formSubmitted: false
+[CHAT] Incrementing turnCount from 2 to 3
+[CHAT] Form trigger check - turnCount: 3 formAlreadySubmitted: false shouldTrigger: false message: what is autism?
+[CHAT] Using streaming mode
+Using fallback RAG context (schema unavailable - cached)
+3:28:48 PM [express] POST /api/chat 200 in 27084ms
+3:29:00 PM [express] GET /api/sessions/187eb7cc-1a41-4018-814d-fd574ba252b7/messages 200 in 259ms ::…
+3:29:02 PM [express] GET /api/sessions/187eb7cc-1a41-4018-814d-fd574ba252b7/messages 304 in 12ms :: …
+[CHAT] Incoming request - sessionId: null messageLength: 15
+[CHAT] Creating new session
+[DatabaseStorage] Creating session with values: { turnCount: '0', formSubmitted: 'false' }
+    updatedAt: 2025-12-08T15:29:16.984Z
+[DatabaseStorage] Insert result: [
+  }
+[CHAT] Incrementing turnCount from 0 to 1
+[CHAT] Using streaming mode
+    formSubmitted: 'false',
+Using fallback RAG context (schema unavailable - cached)
+[CHAT] Form trigger check - turnCount: 1 formAlreadySubmitted: false shouldTrigger: false message: what is autism?
+]
+  {
+    metadata: null,
+[DatabaseStorage] Created session: 28f1dc44-3315-45a9-8c82-3c4369f84510
+    id: '28f1dc44-3315-45a9-8c82-3c4369f84510',
+[CHAT] New session created with ID: 28f1dc44-3315-45a9-8c82-3c4369f84510
+    createdAt: 2025-12-08T15:29:16.984Z,
+    turnCount: '0',
+3:29:46 PM [express] POST /api/chat 200 in 29913ms

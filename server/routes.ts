@@ -166,7 +166,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           { role: "user", content: message },
         ],
         stream: true,
-        max_completion_tokens: 512,
+        max_completion_tokens: 1024,
       });
 
       let fullResponse = "";
