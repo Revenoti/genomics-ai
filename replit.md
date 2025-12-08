@@ -72,7 +72,8 @@ Preferred communication style: Simple, everyday language.
 **AI Integration**:
 - OpenAI GPT-5-mini integration via official SDK (optimized for 2-3x faster responses than GPT-5)
 - **Performance optimizations**: 
-  - max_completion_tokens: 512 (reduced for faster generation)
+  - max_completion_tokens: 1024 (balanced for complete responses)
+  - System prompt optimized to ~250 tokens (reduced from ~1300 for faster TTFT)
   - Performance logging: Time to first token (TTFT) and total response time
 - **Streaming Mode**: Real-time SSE (Server-Sent Events) for typewriter effect
   - Full streaming support for Railway deployment (no serverless timeout limits)

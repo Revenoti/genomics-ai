@@ -1,0 +1,92 @@
+3:28:48 PM [express] POST /api/chat 200 in 27084ms
+3:29:00 PM [express] GET /api/sessions/187eb7cc-1a41-4018-814d-fd574ba252b7/messages 200 in 259ms ::…
+3:29:02 PM [express] GET /api/sessions/187eb7cc-1a41-4018-814d-fd574ba252b7/messages 304 in 12ms :: …
+[CHAT] Incoming request - sessionId: null messageLength: 15
+[CHAT] Creating new session
+[DatabaseStorage] Creating session with values: { turnCount: '0', formSubmitted: 'false' }
+    updatedAt: 2025-12-08T15:29:16.984Z
+[DatabaseStorage] Insert result: [
+  }
+[CHAT] Incrementing turnCount from 0 to 1
+[CHAT] Using streaming mode
+    formSubmitted: 'false',
+Using fallback RAG context (schema unavailable - cached)
+[CHAT] Form trigger check - turnCount: 1 formAlreadySubmitted: false shouldTrigger: false message: what is autism?
+]
+  {
+    metadata: null,
+[DatabaseStorage] Created session: 28f1dc44-3315-45a9-8c82-3c4369f84510
+    id: '28f1dc44-3315-45a9-8c82-3c4369f84510',
+[CHAT] New session created with ID: 28f1dc44-3315-45a9-8c82-3c4369f84510
+    createdAt: 2025-12-08T15:29:16.984Z,
+    turnCount: '0',
+3:29:46 PM [express] POST /api/chat 200 in 29913ms
+Starting Container
+npm warn config production Use `--omit=dev` instead.
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.js
+[STORAGE] Using DatabaseStorage (PostgreSQL)
+3:38:48 PM [express] serving on port 8080
+Supabase schema probe error: {"message":""}
+3:38:49 PM [express] GET /api/health 200 in 11ms :: {"status":"healthy","timestamp":"2025-12-08T15:3…
+Stopping Container
+npm error path /app
+npm error command failed
+npm error signal SIGTERM
+npm error command sh -c NODE_ENV=production node dist/index.js
+npm error A complete log of this run can be found in: /root/.npm/_logs/2025-12-08T14_46_54_606Z-debug-0.log
+[CHAT] Incoming request - sessionId: null messageLength: 15 timestamp: 2025-12-08T15:39:13.148Z
+[CHAT] Creating new session
+[DatabaseStorage] Creating session with values: { turnCount: '0', formSubmitted: 'false' }
+[DatabaseStorage] Insert result: [
+  {
+    id: '010e8a69-9b95-4ae2-88b6-52e87a75ab66',
+    turnCount: '0',
+    formSubmitted: 'false',
+    metadata: null,
+    createdAt: 2025-12-08T15:39:13.720Z,
+    updatedAt: 2025-12-08T15:39:13.720Z
+  }
+]
+[DatabaseStorage] Created session: 010e8a69-9b95-4ae2-88b6-52e87a75ab66
+[CHAT] New session created with ID: 010e8a69-9b95-4ae2-88b6-52e87a75ab66
+[CHAT] Incrementing turnCount from 0 to 1
+[CHAT] Form trigger check - turnCount: 1 formAlreadySubmitted: false shouldTrigger: false message: what is autism?
+[CHAT] Using streaming mode
+Using fallback RAG context (schema unavailable - cached)
+[PERF] Total response time: 9999ms, tokens: ~0
+3:39:23 PM [express] POST /api/chat 200 in 10011ms
+3:39:41 PM [express] GET /api/sessions/010e8a69-9b95-4ae2-88b6-52e87a75ab66/messages 304 in 15ms :: …
+3:39:42 PM [express] GET /api/sessions/010e8a69-9b95-4ae2-88b6-52e87a75ab66/messages 304 in 14ms :: …
+3:39:38 PM [express] GET /api/sessions/010e8a69-9b95-4ae2-88b6-52e87a75ab66/messages 200 in 423ms ::…
+[CHAT] Form trigger check - turnCount: 1 formAlreadySubmitted: false shouldTrigger: false message: what services do you offer?
+[CHAT] Using streaming mode
+Using fallback RAG context (schema unavailable - cached)
+[CHAT] Incoming request - sessionId: null messageLength: 27 timestamp: 2025-12-08T15:39:55.603Z
+[CHAT] Creating new session
+[DatabaseStorage] Creating session with values: { turnCount: '0', formSubmitted: 'false' }
+[DatabaseStorage] Insert result: [
+  {
+    id: 'dda871f8-084b-4423-9194-28d84236fd3b',
+    turnCount: '0',
+    formSubmitted: 'false',
+    metadata: null,
+    createdAt: 2025-12-08T15:39:55.995Z,
+    updatedAt: 2025-12-08T15:39:55.995Z
+  }
+]
+[DatabaseStorage] Created session: dda871f8-084b-4423-9194-28d84236fd3b
+[CHAT] New session created with ID: dda871f8-084b-4423-9194-28d84236fd3b
+[CHAT] Incrementing turnCount from 0 to 1
+[PERF] Time to first token: 8406ms
+[PERF] Total response time: 9110ms, tokens: ~41.25
+3:40:04 PM [express] POST /api/chat 200 in 9122ms
+[CHAT] Incoming request - sessionId: dda871f8-084b-4423-9194-28d84236fd3b messageLength: 22 timestamp: 2025-12-08T15:40:45.847Z
+[CHAT] Found existing session: dda871f8-084b-4423-9194-28d84236fd3b turnCount: 1 formSubmitted: false
+[CHAT] Incrementing turnCount from 1 to 2
+[CHAT] Form trigger check - turnCount: 2 formAlreadySubmitted: false shouldTrigger: false message: where are you located?
+[CHAT] Using streaming mode
+Using fallback RAG context (schema unavailable - cached)
+[PERF] Time to first token: 8635ms
+[PERF] Total response time: 12725ms, tokens: ~121.5
+3:40:59 PM [express] POST /api/chat 200 in 13372ms
