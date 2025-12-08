@@ -14,5 +14,6 @@ const openai = new OpenAI({
 
 export default openai;
 
-// the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
-export const CHAT_MODEL = "gpt-5";
+// Using gpt-5-mini for optimal performance (2-3x faster than gpt-5, cost-efficient)
+// User requested this change for better response times
+export const CHAT_MODEL = "gpt-5-mini";

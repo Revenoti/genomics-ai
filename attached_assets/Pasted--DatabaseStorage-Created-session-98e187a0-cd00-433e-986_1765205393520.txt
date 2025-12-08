@@ -1,0 +1,42 @@
+[DatabaseStorage] Created session: 98e187a0-cd00-433e-9860-8ce7a882b158
+[CHAT] New session created with ID: 98e187a0-cd00-433e-9860-8ce7a882b158
+[CHAT] Incrementing turnCount from 0 to 1
+[CHAT] Form trigger check - turnCount: 1 formAlreadySubmitted: false shouldTrigger: false message: what is autism?
+[CHAT] Using streaming mode
+Using fallback RAG context (schema unavailable - cached)
+    'content-type': 'application/json; charset=utf-8',
+    'content-length': '337',
+    connection: 'keep-alive',
+Chat API error: RateLimitError: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.
+    vary: 'Origin',
+    at APIError.generate (file:///app/node_modules/openai/core/error.mjs:59:20)
+    'x-request-id': 'req_95fe7324740d400fa59c34e14a33a58a',
+    'x-envoy-upstream-service-time': '3',
+    at OpenAI.makeStatusError (file:///app/node_modules/openai/client.mjs:162:32)
+    'x-openai-proxy-wasm': 'v0.1',
+    'cf-cache-status': 'DYNAMIC',
+    at OpenAI.makeRequest (file:///app/node_modules/openai/client.mjs:330:30)
+    'set-cookie': '__cf_bm=nNepzf_MJc6Y1wHtsvZ5ba_UuAwApDL.EvM0mvS5w48-1765205253-1.0.1.1-t_sh5vVXBYnKr6uuxKySHvzKULOgULG0LxNGBFFzDHn73r4f2TdOiKbcZ7IawYuSEI9RsFgzU4lk__5DlnciYB9OXZCi7uX6SiCCwE1yxP0; path=/; expires=Mon, 08-Dec-25 15:17:33 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=0sz7f5PTeCMYy9HjoAQ0KZ.4XH0LIHzmXomv4Cx1msE-1765205253564-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None',
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async file:///app/dist/index.js:553:22 {
+  status: 429,
+  headers: Headers {
+    date: 'Mon, 08 Dec 2025 14:47:33 GMT',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    message: 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.',
+    'x-content-type-options': 'nosniff',
+    server: 'cloudflare',
+    type: 'insufficient_quota',
+    'cf-ray': '9aad0f025e0a50e5-IAD',
+    'alt-svc': 'h3=":443"; ma=86400'
+    param: null,
+  },
+  requestID: 'req_95fe7324740d400fa59c34e14a33a58a',
+  error: {
+    code: 'insufficient_quota'
+  },
+  code: 'insufficient_quota',
+  param: null,
+  type: 'insufficient_quota'
+}
+2:47:33 PM [express] POST /api/chat 500 in 2228ms :: {"error":"Failed to process chat message"}

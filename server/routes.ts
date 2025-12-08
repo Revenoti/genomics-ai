@@ -59,6 +59,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Chat endpoint with streaming support
   app.post("/api/chat", async (req, res) => {
+    const startTime = Date.now();
+    
     try {
       // Check if OpenAI API key is available
       if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'dummy-key-for-development') {
@@ -70,7 +72,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { sessionId, message, messages: messageHistory } = req.body;
 
-      console.log('[CHAT] Incoming request - sessionId:', sessionId, 'messageLength:', message?.length);
+      console.log('[CHAT] Incoming request - sessionId:', sessionId, 'messageLength:', message?.length, 'timestamp:', new Date().toISOString());
 
       // Validate session
       let session = sessionId ? await storage.getChatSession(sessionId) : null;
@@ -164,14 +166,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
           { role: "user", content: message },
         ],
         stream: true,
-        max_completion_tokens: 1024,
+        max_completion_tokens: 512,
       });
 
       let fullResponse = "";
+      let firstTokenTime: number | null = null;
 
       for await (const chunk of stream) {
         const content = chunk.choices[0]?.delta?.content || "";
         if (content) {
+          if (!firstTokenTime) {
+            firstTokenTime = Date.now();
+            console.log(`[PERF] Time to first token: ${firstTokenTime - startTime}ms`);
+          }
           fullResponse += content;
           res.write(`data: ${JSON.stringify({ content, sessionId: session.id })}\n\n`);
         }
@@ -181,6 +188,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           break;
         }
       }
+
+      const totalTime = Date.now() - startTime;
+      console.log(`[PERF] Total response time: ${totalTime}ms, tokens: ~${fullResponse.length / 4}`);
 
       // Store assistant message
       await storage.createMessage({
