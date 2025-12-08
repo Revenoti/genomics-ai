@@ -70,12 +70,13 @@ Preferred communication style: Simple, everyday language.
 - `POST /api/leads` - Submit lead qualification form data
 
 **AI Integration**:
-- OpenAI GPT-5 integration via official SDK
-- **Dual-Mode Response System** for reliability across environments:
-  - **Streaming Mode** (Local Development): Real-time SSE (Server-Sent Events) for typewriter effect
-  - **Non-Streaming Mode** (Netlify Serverless): Complete JSON responses to avoid serverless timeout issues
-  - Automatic environment detection via `AWS_LAMBDA_FUNCTION_NAME` and `NETLIFY` env vars
-  - Frontend automatically handles both response types for seamless cross-environment compatibility
+- OpenAI GPT-5-mini integration via official SDK (optimized for 2-3x faster responses than GPT-5)
+- **Performance optimizations**: 
+  - max_completion_tokens: 512 (reduced for faster generation)
+  - Performance logging: Time to first token (TTFT) and total response time
+- **Streaming Mode**: Real-time SSE (Server-Sent Events) for typewriter effect
+  - Full streaming support for Railway deployment (no serverless timeout limits)
+  - X-Accel-Buffering header disabled for proper streaming through proxies
 - System prompt defines dual role: 50% medical consultant, 50% sales advisor
 - **Clinic Information**: AI assistant is aware of:
   - Physical Address: 1217 Sovereign Row, Suite 107, Oklahoma City, OK 73108
