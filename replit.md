@@ -27,6 +27,12 @@ Preferred communication style: Simple, everyday language.
 
 **UI Components**: Built using shadcn/ui component library with Radix UI primitives and Tailwind CSS for styling. Design follows a healthcare-focused aesthetic with professional, trust-building visuals.
 
+**Rich Text Chat Rendering**:
+- ReactMarkdown with remark-gfm for full markdown support including auto-linking URLs
+- Custom styled components: headings, blockquotes, code blocks, lists
+- Links styled with primary color, underline, and external link icon (ExternalLink from lucide-react)
+- All external links open in new tab (target="_blank")
+
 **Styling System**: 
 - Tailwind CSS with custom configuration for healthcare-appropriate color schemes
 - **Color Scheme**: Blue-cyan primary color (HSL 195, 60%, 38% light mode / 48% dark mode) - a bluer variant inspired by the clinic's logo
