@@ -49,6 +49,7 @@ A sophisticated AI-powered chat interface that serves as an intelligent consulta
 - **PostgreSQL** with Drizzle ORM for persistent data storage
 - **neon-serverless** database driver with WebSocket support
 - **Session Management** with localStorage and database persistence
+- **Session Management** with localStorage and database persistence2
 
 ### Development Tools
 - **TypeScript** for type safety
