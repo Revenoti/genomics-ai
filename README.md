@@ -19,17 +19,24 @@ A sophisticated AI-powered chat interface that serves as an intelligent consulta
 
 ### Key Features
 
-- **🎨 Engaging Landing Page**: Animated service carousel with 6 rotating images (4-second auto-rotate, pause-on-hover) and floating intriguing questions with fade animations
-- **🤖 AI-Powered Consultation**: ChatGPT-style interface with streaming responses powered by OpenAI GPT-5
-- **📚 RAG Knowledge Base**: Supabase vector database integration for contextual responses about clinic services, research, and the Posey Protocol
-- **💾 Database Persistence**: PostgreSQL support with automatic session restoration across page refreshes and server restarts
-- **🔄 Session Memory**: Conversation history persists via localStorage (within browser session) and optionally to database (across server restarts)
-- **🆕 New Chat Feature**: Start fresh conversations with confirmation dialog while preserving previous sessions in database
-- **📋 Dynamic Lead Qualification**: Intelligent form triggering after 2-4 conversation exchanges to capture patient information
-- **🎯 Smart Recommendations**: AI assistant provides personalized service recommendations with direct links to clinic scheduling
-- **📱 Mobile Optimized**: Fully responsive design with 44px touch targets, optimized message input, and clean two-line footer address
-- **📍 Professional Footer**: Clinic address and copyright information displayed on all pages with mobile-optimized formatting
-- **🌐 SEO & Social Sharing**: Custom 1200x630px branded social media card with comprehensive Open Graph and Twitter Card meta tags for beautiful previews on Facebook, LinkedIn, Twitter, and WhatsApp
+- **Engaging Landing Page**: Animated service carousel with 6 rotating images (4-second auto-rotate, pause-on-hover) and floating intriguing questions with fade animations
+- **AI-Powered Consultation**: ChatGPT-style interface with streaming responses powered by OpenAI GPT-5
+- **RAG Knowledge Base**: Supabase vector database integration for contextual responses about clinic services, research, and the Posey Protocol
+- **Dark Mode**: Toggle between light and dark themes with localStorage persistence across sessions
+- **Welcome Message & Starter Chips**: Four clickable starter question chips in the empty chat state to help users begin conversations
+- **Quick-Reply Suggestions**: AI generates 3 contextual follow-up questions after each response, sent as a separate SSE event
+- **Enhanced Typing Indicator**: Animated dot pulse with rotating contextual status messages while AI is responding
+- **Relative Timestamps**: Human-readable timestamps ("just now", "2m ago") beneath every message bubble
+- **Smooth Page Transitions**: Fade-in animations when navigating between landing and chat pages
+- **Embeddable Chat Widget**: Floating chat bubble that can be embedded on any website (including Go High Level) via a single script tag
+- **Database Persistence**: PostgreSQL support with automatic session restoration across page refreshes and server restarts
+- **Session Memory**: Conversation history persists via localStorage (within browser session) and optionally to database (across server restarts)
+- **New Chat Feature**: Start fresh conversations with confirmation dialog while preserving previous sessions in database
+- **Dynamic Lead Qualification**: Intelligent form triggering after 2-4 conversation exchanges to capture patient information
+- **Smart Recommendations**: AI assistant provides personalized service recommendations with direct links to clinic scheduling
+- **Mobile Optimized**: Fully responsive design with 44px touch targets, optimized message input, and clean two-line footer address
+- **Professional Footer**: Clinic address and copyright information displayed on all pages with mobile-optimized formatting
+- **SEO & Social Sharing**: Custom 1200x630px branded social media card with comprehensive Open Graph and Twitter Card meta tags
 
 ## Technology Stack
 
@@ -41,6 +48,7 @@ A sophisticated AI-powered chat interface that serves as an intelligent consulta
 - **Tailwind CSS** with shadcn/ui component library
 - **Framer Motion** for animations
 - **React Hook Form** + Zod for form validation
+- **ReactMarkdown** with remark-gfm for rich text chat rendering
 
 ### Backend
 - **Express.js** with TypeScript
@@ -49,7 +57,6 @@ A sophisticated AI-powered chat interface that serves as an intelligent consulta
 - **PostgreSQL** with Drizzle ORM for persistent data storage
 - **neon-serverless** database driver with WebSocket support
 - **Session Management** with localStorage and database persistence
-- **Session Management** with localStorage and database persistence2
 
 ### Development Tools
 - **TypeScript** for type safety
@@ -88,6 +95,10 @@ SESSION_SECRET=your_secure_session_secret_here
 DATABASE_URL=postgresql://user:password@host:port/database
 # Example Supabase format:
 # DATABASE_URL=postgresql://postgres.[project-ref]:[password]@aws-0-us-west-1.pooler.supabase.com:5432/postgres
+
+# Widget CORS (Optional - comma-separated list of allowed origins for embedded widget)
+# Required if embedding the widget on external websites
+WIDGET_ALLOWED_ORIGINS=https://yoursite.com,https://www.yoursite.com
 ```
 
 ### Supabase Setup (Optional)
@@ -163,77 +174,104 @@ This creates the necessary tables and indexes in your database. The application 
    http://localhost:5000
    ```
 
-## Deployment
+## Embeddable Chat Widget
 
-### Netlify Deployment
+The application includes an embeddable chat widget that can be added to any external website (including Go High Level sites) as a floating chat bubble.
 
-This application is configured for easy deployment to Netlify with serverless functions.
+### Quick Setup
 
-#### Prerequisites
-- [Netlify account](https://www.netlify.com/)
-- GitHub repository (or GitLab/Bitbucket)
+Add this single line to your website's HTML (in the body section):
 
-#### Quick Deploy
-
-1. **Connect your repository to Netlify**
-   - Log in to Netlify
-   - Click "Add new site" → "Import an existing project"
-   - Connect your Git provider and select this repository
-
-2. **Configure build settings** (auto-configured via `netlify.toml`)
-   - Build command: `npm install && npm run build`
-   - Publish directory: `dist/public`
-   - Functions directory: `netlify/functions`
-
-3. **Set environment variables** in Netlify dashboard:
-   ```
-   OPENAI_API_KEY=your_openai_api_key
-   SUPABASE_URL=your_supabase_url (optional)
-   SUPABASE_ANON_KEY=your_supabase_anon_key (optional)
-   SESSION_SECRET=your_random_secret_string
-   DATABASE_URL=your_postgresql_connection_string (recommended)
-   ```
-
-4. **Deploy**
-   - Click "Deploy site"
-   - Netlify will build and deploy your application
-   - Your site will be live at `https://your-site-name.netlify.app`
-
-5. **Configure custom domain** (optional)
-   - Go to "Domain settings" in Netlify
-   - Add your custom domain (e.g., `genomic-ai.io`)
-   - Update DNS records as instructed
-   - SSL certificate is automatically provisioned
-
-#### Manual Deployment
-
-```bash
-# Install Netlify CLI
-npm install -g netlify-cli
-
-# Login to Netlify
-netlify login
-
-# Deploy to production
-netlify deploy --prod
+```html
+<script src="https://YOUR-APP-URL/widget-embed.js"></script>
 ```
 
-#### Important Notes
+Replace `YOUR-APP-URL` with your deployed app address (e.g., `https://genomic-ai.io`).
 
-- **Environment Variables**: All required secrets must be set in Netlify's environment variables UI
-- **Database**: Highly recommended to set `DATABASE_URL` for production to enable persistent session storage
-- **Supabase**: Optional - falls back to built-in context if not configured
-- **Custom Domain**: Update Open Graph URLs in `client/index.html` to match your domain
-- **Build Time**: First build may take 2-3 minutes; subsequent builds are faster with caching
+### How It Works
 
-### Alternative: Replit Deployment
+- A floating chat bubble appears in the bottom-right corner of the website
+- Clicking the bubble opens a 400x600px chat window with the full AI assistant
+- The widget uses a separate localStorage key (`genomic-ai-widget-session`) to avoid conflicts with the main app
+- On mobile devices, the chat window expands to fill the entire screen
+- The close button inside the widget communicates with the parent page via postMessage
 
-This application can also be deployed directly on Replit:
+### Widget Features
+
+- Compact header with logo, title, reset, and close buttons
+- Full AI conversation with streaming responses
+- Welcome message with starter question chips
+- Lead qualification form
+- No footer or landing page navigation (chat-only interface)
+
+### Configuration
+
+**CORS / Allowed Origins**: Set the `WIDGET_ALLOWED_ORIGINS` environment variable to control which domains can embed the widget:
+
+```env
+WIDGET_ALLOWED_ORIGINS=https://yoursite.com,https://www.yoursite.com
+```
+
+**Custom Origin Override**: If the embed script is hosted separately from the app, use the `data-origin` attribute:
+
+```html
+<script src="/path/to/widget-embed.js" data-origin="https://genomic-ai.io"></script>
+```
+
+### Go High Level Integration
+
+For detailed step-by-step instructions on adding the widget to a Go High Level website or funnel, see **[WIDGET-SETUP-GUIDE.md](WIDGET-SETUP-GUIDE.md)**.
+
+## Deployment
+
+### Railway Deployment (Recommended)
+
+Optimized for Railway deployment with full streaming support for real-time AI responses.
+
+1. Push code to GitHub repository
+2. Create new project on [Railway](https://railway.app)
+3. Select "Deploy from GitHub repo"
+4. Configure environment variables in Railway dashboard:
+   - `OPENAI_API_KEY` - OpenAI API key
+   - `DATABASE_URL` - PostgreSQL connection string
+   - `SUPABASE_URL` - Supabase project URL (optional)
+   - `SUPABASE_ANON_KEY` - Supabase anonymous key (optional)
+   - `SESSION_SECRET` - Random string for session encryption
+   - `WIDGET_ALLOWED_ORIGINS` - Comma-separated allowed origins for widget embedding (optional)
+5. Railway automatically builds and deploys on each push
+
+### Replit Deployment
 
 1. Import repository to Replit
 2. Set environment variables in Secrets
 3. Click "Run" - application starts on port 5000
 4. Use Replit's built-in deployment for production
+
+### Netlify Deployment
+
+This application is configured for deployment to Netlify with serverless functions.
+
+1. Connect your repository to Netlify
+2. Build settings are auto-configured via `netlify.toml`
+3. Set environment variables in Netlify dashboard
+4. Deploy - site will be live at `https://your-site-name.netlify.app`
+
+**Note**: Netlify's serverless function timeout limits may affect long AI streaming responses. Railway is recommended for the best streaming experience.
+
+### Production Deployment (General)
+
+```bash
+# Push schema to your PostgreSQL database
+npm run db:push
+
+# Build the application
+npm run build
+
+# Start production server
+npm start
+```
+
+Ensure all environment variables are set on your hosting platform. **DATABASE_URL is strongly recommended** for production to enable persistent session storage.
 
 ## Project Structure
 
@@ -241,53 +279,58 @@ This application can also be deployed directly on Replit:
 ├── client/                    # Frontend application
 │   ├── public/               # Static assets
 │   │   ├── logo2_1763479558697.png
-│   │   └── social/          # Social media cards
-│   │       └── og-card.png  # Open Graph card (1200x630px)
+│   │   ├── widget-embed.js   # Embeddable widget script
+│   │   └── social/           # Social media cards
+│   │       └── og-card.png   # Open Graph card (1200x630px)
 │   ├── src/
 │   │   ├── components/       # React components
-│   │   │   ├── chat/        # Chat-specific components
-│   │   │   │   ├── MessageInput.tsx    # Message input with send button
-│   │   │   │   ├── MessageList.tsx
-│   │   │   │   ├── MessageBubble.tsx
-│   │   │   │   └── DynamicFormMessage.tsx
-│   │   │   ├── ui/          # shadcn/ui components
-│   │   │   ├── Footer.tsx   # Footer with address and copyright
+│   │   │   ├── chat/         # Chat-specific components
+│   │   │   │   ├── MessageInput.tsx       # Message input with send button
+│   │   │   │   ├── MessageList.tsx        # Message list with auto-scroll
+│   │   │   │   ├── MessageBubble.tsx      # Individual message with timestamps
+│   │   │   │   ├── DynamicFormMessage.tsx  # Lead qualification form
+│   │   │   │   ├── WelcomeMessage.tsx     # Welcome screen with starter chips
+│   │   │   │   ├── SuggestionChips.tsx    # Quick-reply follow-up suggestions
+│   │   │   │   └── TypingIndicator.tsx    # Animated typing indicator
+│   │   │   ├── ui/           # shadcn/ui components
+│   │   │   ├── Footer.tsx    # Footer with address and copyright
+│   │   │   ├── ThemeToggle.tsx # Dark/light mode toggle button
 │   │   │   ├── HeroSection.tsx
 │   │   │   ├── ImageCarousel.tsx
 │   │   │   └── IntriguingQuestions.tsx
-│   │   ├── contexts/        # React Context providers
-│   │   │   └── ChatContext.tsx
-│   │   ├── hooks/           # Custom React hooks
-│   │   ├── lib/             # Utilities and helpers
-│   │   ├── pages/           # Page components
-│   │   │   ├── landing.tsx  # Landing page with footer
-│   │   │   └── chat.tsx     # Chat interface with New Chat button and footer
-│   │   ├── index.css        # Global styles and theme
-│   │   └── main.tsx         # Entry point
-│   └── index.html           # HTML template with SEO meta tags
+│   │   ├── contexts/         # React Context providers
+│   │   │   └── ChatContext.tsx  # Chat state (messages, streaming, suggestions)
+│   │   ├── hooks/            # Custom React hooks
+│   │   ├── lib/              # Utilities and helpers
+│   │   ├── pages/            # Page components
+│   │   │   ├── landing.tsx   # Landing page with carousel and footer
+│   │   │   ├── chat.tsx      # Main chat interface
+│   │   │   └── widget.tsx    # Embeddable widget chat interface
+│   │   ├── index.css         # Global styles, theme, and animations
+│   │   └── main.tsx          # Entry point
+│   └── index.html            # HTML template with SEO meta tags
 │
-├── server/                   # Backend application
-│   ├── routes.ts            # API endpoints
-│   ├── storage.ts           # Storage interface (DatabaseStorage/MemStorage)
-│   ├── db.ts                # Database connection (neon-serverless)
-│   ├── supabase.ts          # Supabase RAG integration
-│   ├── openai.ts            # OpenAI client configuration
-│   ├── system-prompt.ts     # AI system prompt and form logic
-│   ├── index.ts             # Express server setup
-│   └── vite.ts              # Vite SSR configuration
+├── server/                    # Backend application
+│   ├── routes.ts             # API endpoints with CORS middleware
+│   ├── storage.ts            # Storage interface (DatabaseStorage/MemStorage)
+│   ├── db.ts                 # Database connection (neon-serverless)
+│   ├── supabase.ts           # Supabase RAG integration
+│   ├── openai.ts             # OpenAI client configuration
+│   ├── system-prompt.ts      # AI system prompt and form logic
+│   ├── index.ts              # Express server setup
+│   └── vite.ts               # Vite SSR configuration
 │
-├── shared/                   # Shared types and schemas
-│   └── schema.ts            # Drizzle schemas and Zod validation
+├── shared/                    # Shared types and schemas
+│   └── schema.ts             # Drizzle schemas and Zod validation
 │
-├── attached_assets/          # User-uploaded assets
-│   └── service_images/      # Carousel images
+├── attached_assets/           # User-uploaded assets
+│   └── service_images/       # Carousel images
 │
-├── netlify/                  # Netlify deployment
-│   └── functions/           # Serverless functions
-│       └── index.ts         # API handler for Netlify
-│
-├── netlify.toml             # Netlify configuration
-└── README.md                # This file
+├── WIDGET-SETUP-GUIDE.md     # Detailed widget embedding instructions
+├── railway.json              # Railway deployment configuration
+├── nixpacks.toml             # Nixpacks build configuration
+├── netlify.toml              # Netlify configuration
+└── README.md                 # This file
 ```
 
 ## API Documentation
@@ -313,6 +356,7 @@ Main chat endpoint with streaming support.
   ```
   data: {"content": "AI response chunk", "sessionId": "uuid"}
   data: {"done": true}
+  data: {"suggestions": ["Follow-up question 1", "Follow-up question 2", "Follow-up question 3"]}
   ```
 - **Form Trigger Response**: JSON when form should be displayed
   ```json
@@ -339,7 +383,7 @@ Fetch message history for a session (used for conversation restoration).
       "role": "user",
       "content": "Message content",
       "type": "message",
-      "timestamp": "2025-11-18T16:00:00Z"
+      "timestamp": "2026-02-20T16:00:00Z"
     }
   ]
 }
@@ -370,53 +414,65 @@ Submit lead qualification form.
 }
 ```
 
+### `GET /api/health`
+
+Health check endpoint for monitoring and auto-restart.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "timestamp": "2026-02-20T16:00:00Z",
+  "uptime": 3600,
+  "environment": "production"
+}
+```
+
 ## Features in Detail
 
 ### Landing Page
-- **Gradient Background**: Professional blue-cyan gradient (HSL 195°, 60%)
+- **Gradient Background**: Professional blue-cyan gradient (HSL 195, 60%)
 - **Service Carousel**: 6 rotating service images with smooth transitions
 - **Floating Questions**: Animated questions that fade in/out to engage visitors
+- **Dark Mode Toggle**: Theme toggle button in the top-right corner
+- **Smooth Page Transition**: Fade-in animation on page load
 - **Responsive Logo**: Clinic logo (48px mobile, 64px desktop) in top-left corner
 
 ### Chat Interface
 - **Real-time Streaming**: Token-by-token response streaming for natural conversation flow
+- **Welcome Message**: Branded welcome screen with 4 clickable starter question chips (shown when chat is empty)
+- **Quick-Reply Suggestions**: AI generates 3 contextual follow-up questions after each response, displayed as clickable chips
+- **Enhanced Typing Indicator**: Animated pulsing dots with rotating status messages ("Analyzing your question...", "Searching knowledge base...", etc.)
+- **Relative Timestamps**: Human-readable timestamps ("just now", "2m ago", "1h ago") beneath each message bubble
+- **Rich Text Rendering**: Full markdown support with styled headings, blockquotes, code blocks, lists, and auto-linked URLs
+- **Dark Mode Toggle**: Theme toggle in the chat header with localStorage persistence
 - **Context Awareness**: RAG system retrieves relevant clinic information from Supabase
 - **Database Persistence**: Messages and sessions optionally stored in PostgreSQL (when DATABASE_URL is set)
 - **Session Restoration**: Conversation history automatically restored on page refresh via localStorage and database
-- **New Chat Button**: PlusCircle icon button in header to start fresh conversations
-  - Confirmation dialog prevents accidental resets
-  - Clears localStorage session ID and resets chat state
-  - Previous conversations preserved in database for analytics
-  - Success toast notification confirms new session
-- **Form State Persistence**: Lead qualification form visibility preserved across page refreshes (localStorage)
+- **New Chat Button**: PlusCircle icon button in header to start fresh conversations with confirmation dialog
+- **Form State Persistence**: Lead qualification form visibility preserved across page refreshes
 - **Turn Tracking**: Intelligent turn counting for form triggering (3-5 exchanges)
 - **Form Integration**: Dynamic form appears after conversation engagement or strong interest signals
-- **Mobile Optimized**: Compact layout with 32px avatars, send button on right side, and 2-row message input
+- **Mobile Optimized**: Compact layout with send button on right side and 2-row message input
 
-**Session Flow (with DATABASE_URL configured):**
-1. User starts chat → Server creates session with UUID
-2. SessionId saved to browser localStorage (`genomic-ai-session-id`)
-3. All messages persist to PostgreSQL database
-4. On page refresh → SessionId loaded from localStorage
-5. Message history fetched from `/api/sessions/:sessionId/messages`
-6. Full conversation restored seamlessly
-
-**Session Flow (without DATABASE_URL - in-memory mode):**
-1. User starts chat → Server creates session in memory
-2. SessionId saved to browser localStorage
-3. Messages stored in memory (lost on server restart)
-4. On page refresh → Conversation lost if server restarted
+### Embeddable Widget
+- **Floating Chat Bubble**: Teal/green circular button in the bottom-right corner of any website
+- **Iframe Overlay**: 400x600px chat window that slides up when bubble is clicked
+- **Compact Header**: Logo, title, reset button, and close button
+- **Separate Session**: Uses its own localStorage key to avoid conflicts with the main app
+- **Mobile Responsive**: Expands to fullscreen on small screens (< 480px)
+- **PostMessage Communication**: Close button sends message to parent window to close the overlay
+- **Configurable Origin**: Supports `data-origin` attribute for custom app URL
+- **CORS Security**: Allowed origins controlled via `WIDGET_ALLOWED_ORIGINS` environment variable
 
 ### Footer
-- **Contact Information**: Clinic address displayed prominently on all pages
-  - Address format (two lines for mobile readability):
-    - Line 1: 1217 Sovereign Row suite 107
-    - Line 2: Oklahoma City, OK 73108
+- **Contact Information**: Clinic address displayed on all pages
+  - Line 1: 1217 Sovereign Row suite 107
+  - Line 2: Oklahoma City, OK 73108
   - MapPin icon for visual clarity
-- **Copyright Notice**: "© 2025 Functional Genomic AI. All rights Reserved."
-- **Responsive Design**: Clean centered layout optimized for mobile and desktop
+- **Copyright Notice**: "© 2026 Functional Genomic AI. All rights Reserved."
 - **Professional Styling**: Semi-transparent card background with subtle backdrop blur
-- **Consistent Placement**: Appears on both landing page and chat interface
+- **Consistent Placement**: Appears on landing page and main chat interface (not on widget)
 
 ### AI System Prompt
 The assistant operates with a dual role:
@@ -431,43 +487,55 @@ The application uses a professional healthcare-focused blue-cyan color palette:
 - **Gradients**: Dark blue to lighter blue-cyan
 - **Typography**: Inter for body text, Sora for headings
 
-## Deployment
+## Recent Updates
 
-### Replit Deployment (Current)
-The application is configured for Replit with:
-- Custom domain: `genomic-ai.com`
-- Automatic workflow restart on file changes
-- Environment secrets management
+### February 2026
 
-### Production Deployment
-For production deployment:
+**Engagement Enhancements**
+- Dark mode toggle (ThemeToggle component) with localStorage persistence, added to both landing page and chat header
+- Welcome message with 4 clickable starter question chips shown when chat is empty
+- Quick-reply suggestion chips: AI generates 3 contextual follow-up questions after each response, sent as separate SSE event after done signal
+- Smooth page transition fade-in animations on both landing and chat pages
+- Enhanced typing indicator with animated dot pulse and rotating contextual status messages
+- Relative message timestamps ("just now", "2m ago", etc.) beneath each message bubble
+- ChatContext updated with `suggestions` state and `SET_SUGGESTIONS` action
 
-1. **Database Migration**
-   ```bash
-   npm run db:push
-   ```
+**Embeddable Chat Widget**
+- New widget page at `/widget` - streamlined chat interface for iframe embedding (no footer, no landing navigation)
+- Embed script at `/widget-embed.js` - vanilla JS that creates floating chat bubble + iframe overlay
+- Widget uses separate localStorage key (`genomic-ai-widget-session`) to avoid conflicts with main app
+- Close button communicates with parent window via postMessage
+- CORS controlled via `WIDGET_ALLOWED_ORIGINS` env var (comma-separated list of allowed origins)
+- Embed script supports `data-origin` attribute to override auto-detected origin
+- Detailed setup guide for Go High Level websites in `WIDGET-SETUP-GUIDE.md`
 
-2. **Build the application**
-   ```bash
-   npm run build
-   ```
+**Bug Fixes**
+- Updated copyright year from 2025 to 2026 in footer
 
-3. **Start production server**
-   ```bash
-   npm start
-   ```
+### November 2025
 
-4. **Environment Variables**
-   - Ensure all environment variables are set on your hosting platform
-   - **DATABASE_URL is strongly recommended** - Without it, data is lost on server restarts
-   - Configure Supabase connection pooling for scale
-   - Monitor database connection health (pool limits, error logging)
+**New Chat Feature**
+- Added "New Chat" button (PlusCircle icon) to chat header
+- Confirmation dialog prevents accidental session resets
+- Clears localStorage session ID and resets chat state to welcome message
+- Previous conversations preserved in database for analytics
 
-### Recommended Hosting Platforms
-- **Replit** (current setup)
-- **Vercel** (with Serverless Functions)
-- **Railway** (for full-stack deployment)
-- **Render** (with PostgreSQL add-on)
+**Footer Component**
+- Professional footer added to both landing and chat pages
+- Contact information with two-line address for mobile readability
+- Semi-transparent card background with backdrop blur
+
+**UI Improvements**
+- Fixed message input send button position from left to right (standard chat UI pattern)
+- Changed from absolute positioning to flex layout for better responsiveness
+- Improved mobile footer formatting with clean two-line address display
+
+**Deployment & Social Sharing**
+- Updated custom domain from genomic-ai.com to **genomic-ai.io**
+- Created custom 1200x630px branded Open Graph card for social media sharing
+- Configured comprehensive Open Graph and Twitter Card meta tags
+- Railway deployment configuration with streaming support
+- Netlify deployment configuration with serverless functions
 
 ## Contributing
 
@@ -490,11 +558,7 @@ Contributions are welcome! Please follow these guidelines:
    ```bash
    git commit -m "feat: add new feature description"
    ```
-6. **Push to your fork**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-7. **Create a Pull Request**
+6. **Push to your fork and create a Pull Request**
 
 ### Code Style
 - TypeScript for type safety
@@ -504,53 +568,9 @@ Contributions are welcome! Please follow these guidelines:
 
 ## License
 
-Copyright © 2025 Functional Genomic Medicine. All rights reserved.
+Copyright 2026 Functional Genomic Medicine. All rights reserved.
 
 This project is proprietary software. Unauthorized copying, modification, distribution, or use of this software, via any medium, is strictly prohibited.
-
-## Recent Updates
-
-### November 2025
-
-**New Chat Feature**
-- Added "New Chat" button (PlusCircle icon) to chat header
-- Confirmation dialog prevents accidental session resets
-- Dialog message: "Your current conversation session will be cleared. You can start fresh with a new session."
-- Clears localStorage session ID and resets chat state to welcome message
-- Previous conversations preserved in database for analytics
-- Success toast notification confirms new session started
-
-**Footer Component**
-- Professional footer added to both landing and chat pages
-- Contact information:
-  - Address displayed on two lines for mobile readability:
-    - Line 1: 1217 Sovereign Row suite 107
-    - Line 2: Oklahoma City, OK 73108
-  - MapPin icon for visual clarity
-- Copyright notice: "© 2025 Functional Genomic AI. All rights Reserved."
-- Semi-transparent card background with backdrop blur
-- Centered layout optimized for mobile and desktop
-
-**UI Improvements**
-- Fixed message input send button position from left to right (standard chat UI pattern)
-- Changed from absolute positioning to flex layout for better responsiveness
-- Send button now uses `flex-shrink-0` to maintain size
-- Improved mobile footer formatting with clean two-line address display
-
-**Deployment & Social Sharing**
-- Updated custom domain from genomic-ai.com to **genomic-ai.io** across all meta tags
-- **Created custom 1200x630px branded Open Graph card** for social media sharing
-  - Professional blue-cyan gradient background matching app design
-  - DNA helix branding with clinic name and tagline
-  - Optimized for Facebook, LinkedIn, Twitter, and WhatsApp previews
-  - Stored at `client/public/social/og-card.png`
-- Configured comprehensive Open Graph and Twitter Card meta tags
-- Added `og:image:type` and `og:image:secure_url` for enhanced compatibility
-- Created `netlify.toml` with serverless functions, redirects, and security headers
-- Added Netlify serverless function wrapper in `netlify/functions/index.ts`
-- Comprehensive Netlify deployment documentation in README
-- One-click deployment ready with environment variable configuration
-- Automatic SSL certificate provisioning for custom domains
 
 ## Support
 
@@ -569,7 +589,7 @@ For questions or support:
 ---
 
 <div align="center">
-  <p>Built with ❤️ for Functional Genomic Medicine</p>
+  <p>Built for Functional Genomic Medicine</p>
   <p>
     <a href="https://genomic-ai.io">Visit Live Application</a>
   </p>
