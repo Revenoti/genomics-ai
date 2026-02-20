@@ -9,6 +9,7 @@ import { Link } from 'wouter';
 import logoUrl from '@assets/logo2_1763479558697.png';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -159,6 +160,7 @@ export default function Chat() {
     };
     dispatch({ type: 'ADD_MESSAGE', payload: userMessage });
     dispatch({ type: 'SET_STREAMING', payload: true });
+    dispatch({ type: 'SET_SUGGESTIONS', payload: [] });
 
     try {
       const requestBody = {
@@ -277,6 +279,11 @@ export default function Chat() {
               if (data.done) {
                 dispatch({ type: 'SET_STREAMING', payload: false });
               }
+
+              if (data.suggestions && Array.isArray(data.suggestions) && data.suggestions.length > 0) {
+                console.log('[FRONTEND] Received suggestions:', data.suggestions);
+                dispatch({ type: 'SET_SUGGESTIONS', payload: data.suggestions });
+              }
             } catch (error) {
               console.error('[FRONTEND] Error parsing SSE line:', line, error);
             }
@@ -365,7 +372,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-screen bg-background animate-page-enter">
       {/* Header */}
       <header className="sticky top-0 z-10 h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex items-center justify-between gap-2 h-full px-4 md:px-6">
@@ -380,15 +387,17 @@ export default function Chat() {
           <h1 className="text-base md:text-lg font-semibold text-foreground" data-testid="chat-header">
             Genomics AI Assistant
           </h1>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowNewChatDialog(true)}
-            data-testid="button-new-chat"
-            className="hover-elevate"
-          >
-            <PlusCircle className="h-5 w-5" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowNewChatDialog(true)}
+              data-testid="button-new-chat"
+            >
+              <PlusCircle className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -411,7 +420,7 @@ export default function Chat() {
       </AlertDialog>
 
       {/* Messages */}
-      <MessageList onFormSubmit={handleFormSubmit} />
+      <MessageList onFormSubmit={handleFormSubmit} onSendMessage={handleSendMessage} />
 
       {/* Input */}
       <MessageInput

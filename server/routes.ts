@@ -200,8 +200,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
         type: "message",
       });
 
-      // Send done signal and end stream
+      // Send done signal immediately so UI stops showing typing indicator
       res.write(`data: ${JSON.stringify({ done: true, sessionId: session.id })}\n\n`);
+
+      // Generate follow-up suggestion chips asynchronously (non-blocking)
+      try {
+        const suggestionsResponse = await openai.chat.completions.create({
+          model: CHAT_MODEL,
+          messages: [
+            {
+              role: "system",
+              content: "Generate exactly 3 short follow-up questions (max 8 words each) a user might ask based on this conversation. Return ONLY a JSON array of strings, nothing else. Questions should be relevant to functional genomic medicine and the conversation context."
+            },
+            { role: "user", content: message },
+            { role: "assistant", content: fullResponse },
+            { role: "user", content: "Generate 3 follow-up questions as a JSON array." }
+          ],
+          max_completion_tokens: 150,
+        });
+        const suggestionsText = suggestionsResponse.choices[0]?.message?.content || "[]";
+        const parsed = JSON.parse(suggestionsText);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const suggestions = parsed.slice(0, 3).map((s: any) => String(s).substring(0, 60));
+          res.write(`data: ${JSON.stringify({ suggestions })}\n\n`);
+        }
+      } catch (e) {
+        console.log('[CHAT] Failed to generate suggestions, skipping:', e);
+      }
+
       res.end();
 
     } catch (error) {

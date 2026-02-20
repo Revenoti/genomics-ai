@@ -307,4 +307,71 @@
   .animate-pulse-border {
     animation: pulse-border 3s ease-in-out infinite;
   }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out both;
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.4s ease-out both;
+  }
+
+  @keyframes typing-pulse {
+    0%, 100% {
+      opacity: 0.4;
+      transform: scale(0.85);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-typing-dot-1 {
+    animation: typing-pulse 1.4s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+  .animate-typing-dot-2 {
+    animation: typing-pulse 1.4s ease-in-out infinite;
+    animation-delay: 0.2s;
+  }
+  .animate-typing-dot-3 {
+    animation: typing-pulse 1.4s ease-in-out infinite;
+    animation-delay: 0.4s;
+  }
+
+  @keyframes page-enter {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-page-enter {
+    animation: page-enter 0.3s ease-out both;
+  }
 }

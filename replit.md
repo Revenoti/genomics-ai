@@ -6,6 +6,17 @@ This is a web application that serves as an AI-powered consultation interface fo
 
 The application uses a modern React-based frontend with a Node.js/Express backend, integrating OpenAI's GPT-5-mini for conversational AI capabilities (optimized for speed) and Supabase for RAG (Retrieval-Augmented Generation) to provide knowledge-based responses about the clinic's services.
 
+## Recent Changes (Feb 2026)
+
+**Engagement Enhancements:**
+- Dark mode toggle (ThemeToggle component) with localStorage persistence, added to both landing page and chat header
+- Welcome message with 4 clickable starter question chips shown when chat is empty (replaces hardcoded welcome message)
+- Quick-reply suggestion chips: AI generates 3 contextual follow-up questions after each response, sent as separate SSE event after done signal
+- Smooth page transition animations (animate-page-enter) on both landing and chat pages
+- Enhanced typing indicator with animated dot pulse and rotating contextual status messages
+- Relative message timestamps (just now, 2m ago, etc.) beneath each message bubble
+- ChatContext now includes `suggestions` state and `SET_SUGGESTIONS` action
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
