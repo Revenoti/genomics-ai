@@ -13,7 +13,7 @@ export default function Footer() {
             </div>
           </div>
           <div className="text-xs text-muted-foreground/80 mt-1" data-testid="footer-copyright">
-            © 2025 Functional Genomic AI. All rights Reserved.
+            © 2026 Functional Genomic AI. All rights Reserved.
           </div>
         </div>
       </div>
