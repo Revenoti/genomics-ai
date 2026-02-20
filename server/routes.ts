@@ -9,7 +9,34 @@ import type { LeadFormData } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  
+
+  app.use((req, res, next) => {
+    if (req.path === '/widget' || req.path.startsWith('/widget')) {
+      res.removeHeader('X-Frame-Options');
+    }
+    if (req.path.startsWith('/api/')) {
+      const allowedOrigins = process.env.WIDGET_ALLOWED_ORIGINS
+        ? process.env.WIDGET_ALLOWED_ORIGINS.split(',').map(o => o.trim())
+        : [];
+      const requestOrigin = req.headers.origin;
+      if (requestOrigin && allowedOrigins.length > 0) {
+        const isAllowed = allowedOrigins.some(
+          o => o === '*' || o === requestOrigin
+        );
+        if (isAllowed) {
+          res.setHeader('Access-Control-Allow-Origin', requestOrigin);
+          res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+          res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        }
+      }
+      if (req.method === 'OPTIONS') {
+        res.status(204).end();
+        return;
+      }
+    }
+    next();
+  });
+
   // Health check endpoint for Railway monitoring
   app.get("/api/health", async (_req, res) => {
     try {

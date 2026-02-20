@@ -17,6 +17,14 @@ The application uses a modern React-based frontend with a Node.js/Express backen
 - Relative message timestamps (just now, 2m ago, etc.) beneath each message bubble
 - ChatContext now includes `suggestions` state and `SET_SUGGESTIONS` action
 
+**Embeddable Widget:**
+- Widget page at `/widget` - streamlined chat interface for iframe embedding (no footer, no landing navigation)
+- Embed script at `/widget-embed.js` - vanilla JS that creates floating chat bubble + iframe overlay
+- Widget uses separate localStorage key (`genomic-ai-widget-session`) to avoid conflicts with main app
+- Close button communicates with parent window via postMessage
+- CORS controlled via `WIDGET_ALLOWED_ORIGINS` env var (comma-separated list of allowed origins)
+- Embed script supports `data-origin` attribute to override auto-detected origin
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
