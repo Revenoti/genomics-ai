@@ -7,6 +7,7 @@ interface ChatState {
   showForm: boolean;
   formData: LeadFormData | null;
   sessionId: string | null;
+  suggestions: string[];
 }
 
 type ChatAction =
@@ -17,21 +18,16 @@ type ChatAction =
   | { type: 'SET_FORM_DATA'; payload: LeadFormData | null }
   | { type: 'SET_SESSION_ID'; payload: string }
   | { type: 'LOAD_MESSAGES'; payload: ChatMessage[] }
+  | { type: 'SET_SUGGESTIONS'; payload: string[] }
   | { type: 'RESET_CHAT' };
 
 const initialState: ChatState = {
-  messages: [
-    {
-      id: 'welcome',
-      role: 'assistant',
-      content: "Hello! I am the Functional Genomics AI Assistant. I'm here to help you understand how our personalized, root-cause approach can help you or your loved ones. To start, could you tell me a little about what brought you here today?",
-      timestamp: new Date(),
-    }
-  ],
+  messages: [],
   isStreaming: false,
   showForm: false,
   formData: null,
   sessionId: null,
+  suggestions: [],
 };
 
 function chatReducer(state: ChatState, action: ChatAction): ChatState {
@@ -60,6 +56,8 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
       return { ...state, sessionId: action.payload };
     case 'LOAD_MESSAGES':
       return { ...state, messages: action.payload };
+    case 'SET_SUGGESTIONS':
+      return { ...state, suggestions: action.payload };
     case 'RESET_CHAT':
       return initialState;
     default:

@@ -1,11 +1,12 @@
 import IntriguingQuestions from '@/components/IntriguingQuestions';
 import HeroSection from '@/components/HeroSection';
 import Footer from '@/components/Footer';
+import ThemeToggle from '@/components/ThemeToggle';
 import logoUrl from '@assets/logo2_1763479558697.png';
 
 export default function Landing() {
   return (
-    <div className="relative min-h-screen overflow-hidden flex flex-col">
+    <div className="relative min-h-screen overflow-hidden flex flex-col animate-page-enter">
       {/* Gradient Background */}
       <div 
         className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))]"
@@ -25,14 +26,17 @@ export default function Landing() {
         aria-hidden="true"
       />
 
-      {/* Logo in Top Left */}
-      <div className="absolute top-4 left-6 md:top-8 md:left-12 z-30">
+      {/* Top Bar: Logo + Theme Toggle */}
+      <div className="absolute top-4 left-6 right-6 md:top-8 md:left-12 md:right-12 z-30 flex items-center justify-between">
         <img 
           src={logoUrl} 
           alt="Functional Genomic Medicine Logo" 
           className="h-[60px] w-[60px] md:h-[72px] md:w-[72px]"
           data-testid="img-logo"
         />
+        <div className="text-white">
+          <ThemeToggle />
+        </div>
       </div>
 
       {/* Floating Intriguing Questions Layer */}
